@@ -693,7 +693,7 @@ export default function App() {
         </div>
 
         <div className="footer">
-          ATS.CV — Powered by Claude AI · Your CV is never stored · Free to use
+           · Your CV is never stored ·
         </div>
       </div>
     </>
