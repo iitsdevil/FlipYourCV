@@ -547,8 +547,8 @@ export default function App() {
         <div className="header">
           <div className="logo-area">
             <h1>ATS<span>.</span>CV</h1>
-            <p>// AI-powered resume optimizer</p>
-            <span className="badge">Free Tool</span>
+            <p>// الاداة الاولى لتحسين السيرة الذاتية</p>
+            <span className="badge">ذكاء اصطناعي</span>
           </div>
         </div>
 
