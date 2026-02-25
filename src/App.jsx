@@ -49,14 +49,14 @@ const STYLES = `
   .logo-area p {
     color: var(--muted);
     font-family: 'DM Mono', monospace;
-    font-size: 0.75rem;
+    font-size: 1rem;
     margin-top: 8px;
     letter-spacing: 0.05em;
   }
   .badge {
     background: var(--accent);
     color: #0a0a0a;
-    font-size: 0.65rem;
+    font-size: 0.9rem;
     font-weight: 700;
     padding: 4px 10px;
     border-radius: 2px;
