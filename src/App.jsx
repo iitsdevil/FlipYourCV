@@ -4,7 +4,6 @@ import jsPDF from "jspdf";
 
 const STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap');
-
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
     --bg: #0a0a0a; --surface: #111111; --surface2: #1a1a1a;
@@ -66,29 +65,38 @@ const STYLES = `
   .score-details p { font-size: 0.72rem; color: var(--muted); font-family: 'DM Mono', monospace; }
   .score-bar { width: 100%; height: 4px; background: var(--border); border-radius: 2px; margin-top: 8px; overflow: hidden; }
   .score-bar-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 1s ease; }
-  .cv-preview { background: white; color: #1a1a1a; border-radius: 4px; padding: 32px 28px; font-family: 'Arial', sans-serif; font-size: 0.8rem; line-height: 1.5; max-height: 500px; overflow-y: auto; }
+  /* CV PREVIEW */
+  .cv-preview { background: white; color: #1a1a1a; border-radius: 4px; padding: 32px 28px; font-family: 'Arial', sans-serif; font-size: 0.8rem; line-height: 1.5; max-height: 520px; overflow-y: auto; }
   .cv-preview::-webkit-scrollbar { width: 4px; }
   .cv-preview::-webkit-scrollbar-track { background: #f0f0f0; }
   .cv-preview::-webkit-scrollbar-thumb { background: #ccc; border-radius: 2px; }
   .cv-name { font-size: 1.4rem; font-weight: 700; color: #111; margin-bottom: 4px; }
-  .cv-contact { font-size: 0.72rem; color: #555; margin-bottom: 12px; display: flex; flex-wrap: wrap; gap: 8px; }
-  .cv-contact span::after { content: ' |'; margin-left: 8px; color: #ccc; }
+  .cv-contact { font-size: 0.72rem; color: #555; margin-bottom: 12px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .cv-contact span::after { content: '|'; margin-left: 6px; color: #ccc; }
   .cv-contact span:last-child::after { content: ''; }
   .cv-section-title { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #111; border-bottom: 1.5px solid #111; padding-bottom: 3px; margin: 14px 0 8px; }
   .cv-summary { font-size: 0.78rem; color: #333; line-height: 1.6; }
   .cv-job { margin-bottom: 10px; }
-  .cv-job-header { display: flex; justify-content: space-between; align-items: baseline; }
+  .cv-job-header { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 4px; }
   .cv-job-title { font-weight: 700; font-size: 0.82rem; color: #111; }
   .cv-job-company { font-size: 0.78rem; color: #444; }
   .cv-job-duration { font-size: 0.72rem; color: #777; white-space: nowrap; }
   .cv-bullets { margin: 4px 0 0 16px; }
   .cv-bullets li { font-size: 0.76rem; color: #333; margin-bottom: 2px; }
-  .cv-edu-row { display: flex; justify-content: space-between; margin-bottom: 4px; }
+  .cv-edu-row { display: flex; justify-content: space-between; margin-bottom: 6px; gap: 8px; }
   .cv-edu-degree { font-weight: 600; font-size: 0.78rem; }
   .cv-edu-school { font-size: 0.76rem; color: #555; }
-  .cv-edu-year { font-size: 0.72rem; color: #777; }
+  .cv-edu-year { font-size: 0.72rem; color: #777; white-space: nowrap; }
   .cv-skills-wrap { display: flex; flex-wrap: wrap; gap: 6px; }
   .cv-skill { background: #f0f0f0; border-radius: 2px; padding: 2px 8px; font-size: 0.72rem; color: #333; }
+  .cv-lang-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 4px; }
+  .cv-lang-item { font-size: 0.76rem; color: #333; }
+  .cv-lang-level { font-size: 0.7rem; color: #888; }
+  .cv-hobbies { font-size: 0.76rem; color: #333; }
+  .cv-ref-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .cv-ref-item { font-size: 0.74rem; color: #333; line-height: 1.5; }
+  .cv-ref-name { font-weight: 700; font-size: 0.78rem; color: #111; }
+  /* TIPS */
   .tips-list { margin-top: 12px; }
   .tip-item { display: flex; gap: 8px; padding: 8px 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; margin-bottom: 6px; font-size: 0.75rem; color: var(--muted); font-family: 'DM Mono', monospace; line-height: 1.5; }
   .tip-item::before { content: '→'; color: var(--accent); flex-shrink: 0; }
@@ -111,7 +119,7 @@ const LOADING_MESSAGES = [
   "Generating your PDF layout...",
 ];
 
-// ─── PDF Generator ───────────────────────────────────────────────────────────
+// ─── PDF Generator ────────────────────────────────────────────────────────────
 function generatePDF(data) {
   const doc = new jsPDF({ unit: "pt", format: "a4" });
   const pageW = doc.internal.pageSize.getWidth();
@@ -121,39 +129,37 @@ function generatePDF(data) {
   let y = 50;
 
   const checkPage = (needed = 20) => {
-    if (y + needed > pageH - 40) {
-      doc.addPage();
-      y = 50;
-    }
+    if (y + needed > pageH - 40) { doc.addPage(); y = 50; }
   };
 
   const sectionTitle = (text) => {
     checkPage(30);
     y += 10;
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(8);
+    doc.setFontSize(10);
     doc.setTextColor(30, 30, 30);
     doc.text(text.toUpperCase(), margin, y);
     doc.setDrawColor(30, 30, 30);
     doc.setLineWidth(1);
     doc.line(margin, y + 3, margin + contentW, y + 3);
-    y += 14;
+    y += 16;
   };
 
   // NAME
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(25);
+  doc.setFontSize(24);
   doc.setTextColor(10, 10, 10);
   doc.text(data.name || "Your Name", margin, y);
-  y += 22;
+  y += 26;
 
-  // CONTACT LINE
+  // CONTACT
   const contactParts = [data.email, data.phone, data.location, data.linkedin].filter(Boolean);
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(11);
+  doc.setFontSize(10);
   doc.setTextColor(80, 80, 80);
-  doc.text(contactParts.join("  |  "), margin, y);
-  y += 6;
+  const contactLine = doc.splitTextToSize(contactParts.join("  |  "), contentW);
+  contactLine.forEach(line => { doc.text(line, margin, y); y += 13; });
+  y += 2;
   doc.setDrawColor(200, 200, 200);
   doc.setLineWidth(0.5);
   doc.line(margin, y, margin + contentW, y);
@@ -165,12 +171,8 @@ function generatePDF(data) {
     doc.setFont("helvetica", "normal");
     doc.setFontSize(11);
     doc.setTextColor(50, 50, 50);
-    const summaryLines = doc.splitTextToSize(data.summary, contentW);
-    summaryLines.forEach(line => {
-      checkPage(13);
-      doc.text(line, margin, y);
-      y += 13;
-    });
+    const lines = doc.splitTextToSize(data.summary, contentW);
+    lines.forEach(line => { checkPage(14); doc.text(line, margin, y); y += 14; });
     y += 4;
   }
 
@@ -178,36 +180,31 @@ function generatePDF(data) {
   if (data.experience?.length > 0) {
     sectionTitle("Work Experience");
     data.experience.forEach(job => {
-      checkPage(40);
-      // Job title + duration on same line
+      checkPage(44);
       doc.setFont("helvetica", "bold");
       doc.setFontSize(12);
       doc.setTextColor(10, 10, 10);
       doc.text(job.title || "", margin, y);
       doc.setFont("helvetica", "normal");
-      doc.setFontSize(9.5);
+      doc.setFontSize(10);
       doc.setTextColor(100, 100, 100);
       const durW = doc.getTextWidth(job.duration || "");
       doc.text(job.duration || "", margin + contentW - durW, y);
-      y += 13;
-
-      // Company
+      y += 15;
       doc.setFont("helvetica", "italic");
-      doc.setFontSize(9.5);
+      doc.setFontSize(10);
       doc.setTextColor(60, 60, 60);
       doc.text(job.company || "", margin, y);
-      y += 12;
-
-      // Bullets
+      y += 13;
       doc.setFont("helvetica", "normal");
-      doc.setFontSize(9.5);
+      doc.setFontSize(11);
       doc.setTextColor(50, 50, 50);
       (job.bullets || []).forEach(bullet => {
-        const lines = doc.splitTextToSize(`• ${bullet}`, contentW - 10);
-        lines.forEach((line, i) => {
-          checkPage(12);
-          doc.text(i === 0 ? line : `  ${line.trim()}`, margin + 6, y);
-          y += 12;
+        const blines = doc.splitTextToSize(`• ${bullet}`, contentW - 12);
+        blines.forEach((line, i) => {
+          checkPage(13);
+          doc.text(i === 0 ? line : `  ${line.trim()}`, margin + 8, y);
+          y += 13;
         });
       });
       y += 6;
@@ -218,22 +215,22 @@ function generatePDF(data) {
   if (data.education?.length > 0) {
     sectionTitle("Education");
     data.education.forEach(edu => {
-      checkPage(28);
+      checkPage(30);
       doc.setFont("helvetica", "bold");
       doc.setFontSize(12);
       doc.setTextColor(10, 10, 10);
       doc.text(edu.degree || "", margin, y);
       doc.setFont("helvetica", "normal");
-      doc.setFontSize(11);
+      doc.setFontSize(10);
       doc.setTextColor(100, 100, 100);
       const yearW = doc.getTextWidth(edu.year || "");
       doc.text(edu.year || "", margin + contentW - yearW, y);
-      y += 13;
+      y += 15;
       doc.setFont("helvetica", "normal");
-      doc.setFontSize(9.5);
+      doc.setFontSize(11);
       doc.setTextColor(60, 60, 60);
       doc.text(edu.institution || "", margin, y);
-      y += 16;
+      y += 18;
     });
   }
 
@@ -243,13 +240,46 @@ function generatePDF(data) {
     doc.setFont("helvetica", "normal");
     doc.setFontSize(11);
     doc.setTextColor(50, 50, 50);
-    const skillsText = data.skills.join("  •  ");
-    const skillLines = doc.splitTextToSize(skillsText, contentW);
-    skillLines.forEach(line => {
-      checkPage(13);
-      doc.text(line, margin, y);
-      y += 13;
-    });
+    // Print 3 skills per row
+    const cols = 3;
+    const colW = contentW / cols;
+    for (let i = 0; i < data.skills.length; i += cols) {
+      checkPage(14);
+      for (let j = 0; j < cols; j++) {
+        if (data.skills[i + j]) {
+          doc.text(`• ${data.skills[i + j]}`, margin + j * colW, y);
+        }
+      }
+      y += 14;
+    }
+    y += 4;
+  }
+
+  // LANGUAGES
+  if (data.languages?.length > 0) {
+    sectionTitle("Languages");
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(11);
+    doc.setTextColor(50, 50, 50);
+    const cols = 3;
+    const colW = contentW / cols;
+    for (let i = 0; i < data.languages.length; i += cols) {
+      checkPage(28);
+      for (let j = 0; j < cols; j++) {
+        const lang = data.languages[i + j];
+        if (lang) {
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(11);
+          doc.setTextColor(30, 30, 30);
+          doc.text(lang.language || "", margin + j * colW, y);
+          doc.setFont("helvetica", "normal");
+          doc.setFontSize(10);
+          doc.setTextColor(100, 100, 100);
+          doc.text(lang.level || "", margin + j * colW, y + 13);
+        }
+      }
+      y += 28;
+    }
     y += 4;
   }
 
@@ -260,16 +290,66 @@ function generatePDF(data) {
     doc.setFontSize(11);
     doc.setTextColor(50, 50, 50);
     data.certifications.forEach(cert => {
-      checkPage(13);
-      doc.text(`• ${cert}`, margin + 6, y);
-      y += 13;
+      checkPage(14);
+      doc.text(`• ${cert}`, margin + 8, y);
+      y += 14;
     });
+    y += 4;
+  }
+
+  // HOBBIES
+  if (data.hobbies?.length > 0) {
+    sectionTitle("Hobbies & Interests");
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(11);
+    doc.setTextColor(50, 50, 50);
+    const hobbiesText = data.hobbies.join("  •  ");
+    const hlines = doc.splitTextToSize(hobbiesText, contentW);
+    hlines.forEach(line => { checkPage(14); doc.text(line, margin, y); y += 14; });
+    y += 4;
+  }
+
+  // REFERENCES
+  if (data.references?.length > 0) {
+    sectionTitle("References");
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(11);
+    doc.setTextColor(50, 50, 50);
+    // Check if "available upon request"
+    if (data.references.length === 1 && data.references[0].name?.toLowerCase().includes("available")) {
+      checkPage(14);
+      doc.text("Available upon request", margin, y);
+      y += 14;
+    } else {
+      const cols = 2;
+      const colW = contentW / cols;
+      for (let i = 0; i < data.references.length; i += cols) {
+        checkPage(56);
+        for (let j = 0; j < cols; j++) {
+          const ref = data.references[i + j];
+          if (ref) {
+            const x = margin + j * colW;
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(11);
+            doc.setTextColor(20, 20, 20);
+            doc.text(ref.name || "", x, y);
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(10);
+            doc.setTextColor(60, 60, 60);
+            if (ref.title) { doc.text(ref.title, x, y + 13); }
+            if (ref.company) { doc.text(ref.company, x, y + 26); }
+            if (ref.contact) { doc.text(ref.contact, x, y + 39); }
+          }
+        }
+        y += 56;
+      }
+    }
   }
 
   doc.save("ats-optimized-cv.pdf");
 }
 
-// ─── CV Preview Component ─────────────────────────────────────────────────────
+// ─── CV Preview ───────────────────────────────────────────────────────────────
 function CVPreview({ data }) {
   return (
     <div className="cv-preview">
@@ -280,64 +360,71 @@ function CVPreview({ data }) {
         ))}
       </div>
 
-      {data.summary && (
-        <>
-          <div className="cv-section-title">Professional Summary</div>
-          <div className="cv-summary">{data.summary}</div>
-        </>
-      )}
+      {data.summary && (<><div className="cv-section-title">Professional Summary</div><div className="cv-summary">{data.summary}</div></>)}
 
       {data.experience?.length > 0 && (
-        <>
-          <div className="cv-section-title">Work Experience</div>
-          {data.experience.map((job, i) => (
-            <div className="cv-job" key={i}>
-              <div className="cv-job-header">
-                <div>
-                  <span className="cv-job-title">{job.title}</span>
-                  {job.company && <span className="cv-job-company"> — {job.company}</span>}
-                </div>
-                <span className="cv-job-duration">{job.duration}</span>
-              </div>
-              <ul className="cv-bullets">
-                {(job.bullets || []).map((b, j) => <li key={j}>{b}</li>)}
-              </ul>
+        <><div className="cv-section-title">Work Experience</div>
+        {data.experience.map((job, i) => (
+          <div className="cv-job" key={i}>
+            <div className="cv-job-header">
+              <div><span className="cv-job-title">{job.title}</span>{job.company && <span className="cv-job-company"> — {job.company}</span>}</div>
+              <span className="cv-job-duration">{job.duration}</span>
             </div>
-          ))}
-        </>
+            <ul className="cv-bullets">{(job.bullets || []).map((b, j) => <li key={j}>{b}</li>)}</ul>
+          </div>
+        ))}</>
       )}
 
       {data.education?.length > 0 && (
-        <>
-          <div className="cv-section-title">Education</div>
-          {data.education.map((edu, i) => (
-            <div className="cv-edu-row" key={i}>
-              <div>
-                <div className="cv-edu-degree">{edu.degree}</div>
-                <div className="cv-edu-school">{edu.institution}</div>
-              </div>
-              <div className="cv-edu-year">{edu.year}</div>
-            </div>
-          ))}
-        </>
+        <><div className="cv-section-title">Education</div>
+        {data.education.map((edu, i) => (
+          <div className="cv-edu-row" key={i}>
+            <div><div className="cv-edu-degree">{edu.degree}</div><div className="cv-edu-school">{edu.institution}</div></div>
+            <div className="cv-edu-year">{edu.year}</div>
+          </div>
+        ))}</>
       )}
 
       {data.skills?.length > 0 && (
-        <>
-          <div className="cv-section-title">Skills</div>
-          <div className="cv-skills-wrap">
-            {data.skills.map((s, i) => <span className="cv-skill" key={i}>{s}</span>)}
-          </div>
-        </>
+        <><div className="cv-section-title">Skills</div>
+        <div className="cv-skills-wrap">{data.skills.map((s, i) => <span className="cv-skill" key={i}>{s}</span>)}</div></>
+      )}
+
+      {data.languages?.length > 0 && (
+        <><div className="cv-section-title">Languages</div>
+        <div className="cv-lang-grid">
+          {data.languages.map((l, i) => (
+            <div key={i}><div className="cv-lang-item">{l.language}</div><div className="cv-lang-level">{l.level}</div></div>
+          ))}
+        </div></>
       )}
 
       {data.certifications?.length > 0 && (
-        <>
-          <div className="cv-section-title">Certifications</div>
-          <ul className="cv-bullets">
-            {data.certifications.map((c, i) => <li key={i}>{c}</li>)}
-          </ul>
-        </>
+        <><div className="cv-section-title">Certifications</div>
+        <ul className="cv-bullets">{data.certifications.map((c, i) => <li key={i}>{c}</li>)}</ul></>
+      )}
+
+      {data.hobbies?.length > 0 && (
+        <><div className="cv-section-title">Hobbies & Interests</div>
+        <div className="cv-hobbies">{data.hobbies.join("  •  ")}</div></>
+      )}
+
+      {data.references?.length > 0 && (
+        <><div className="cv-section-title">References</div>
+        {data.references[0]?.name?.toLowerCase().includes("available") ? (
+          <div className="cv-hobbies">Available upon request</div>
+        ) : (
+          <div className="cv-ref-grid">
+            {data.references.map((r, i) => (
+              <div className="cv-ref-item" key={i}>
+                <div className="cv-ref-name">{r.name}</div>
+                {r.title && <div>{r.title}</div>}
+                {r.company && <div>{r.company}</div>}
+                {r.contact && <div style={{color:"#777"}}>{r.contact}</div>}
+              </div>
+            ))}
+          </div>
+        )}</>
       )}
     </div>
   );
@@ -382,27 +469,17 @@ export default function App() {
   const handleFile = async (f) => {
     if (!f) return;
     setError("");
-    try {
-      const text = await extractText(f);
-      setFile(f);
-      setRawText(text);
-    } catch (e) {
-      setError(e.message);
-    }
+    try { const text = await extractText(f); setFile(f); setRawText(text); }
+    catch (e) { setError(e.message); }
   };
 
   const convert = async () => {
     const cvContent = rawText.trim();
     if (!cvContent) { setError("Please upload a CV or paste your CV text."); return; }
-    setLoading(true);
-    setResult(null);
-    setError("");
+    setLoading(true); setResult(null); setError("");
     let msgIdx = 0;
     setLoadingMsg(LOADING_MESSAGES[0]);
-    const interval = setInterval(() => {
-      msgIdx = (msgIdx + 1) % LOADING_MESSAGES.length;
-      setLoadingMsg(LOADING_MESSAGES[msgIdx]);
-    }, 2000);
+    const interval = setInterval(() => { msgIdx = (msgIdx + 1) % LOADING_MESSAGES.length; setLoadingMsg(LOADING_MESSAGES[msgIdx]); }, 2000);
     try {
       const response = await fetch("/api/convert", {
         method: "POST",
@@ -435,7 +512,6 @@ export default function App() {
         </div>
 
         <div className="main-grid">
-          {/* INPUT */}
           <div>
             <div className="panel">
               <div className="panel-header"><span className="num">01</span><h2>Your CV</h2></div>
@@ -470,7 +546,6 @@ export default function App() {
                 </button>
               </div>
             </div>
-
             <div className="tips-grid" style={{ marginTop: 16 }}>
               {[["No Tables/Columns","ATS can't read multi-column layouts"],["Simple Fonts","Arial, Calibri, Times New Roman"],["Standard Sections","Exact headers ATS expects"],["Keywords Matter","Mirror the job description"]].map(([t,d]) => (
                 <div className="tip" key={t}><strong>{t}</strong>{d}</div>
@@ -478,15 +553,11 @@ export default function App() {
             </div>
           </div>
 
-          {/* OUTPUT */}
           <div className="panel">
             <div className="panel-header"><span className="num">02</span><h2>ATS Optimized CV</h2></div>
             <div className="panel-body">
               {loading ? (
-                <div className="loading-state">
-                  <div className="big-spinner" />
-                  <p>{loadingMsg}</p>
-                </div>
+                <div className="loading-state"><div className="big-spinner" /><p>{loadingMsg}</p></div>
               ) : result ? (
                 <>
                   {result.score != null && (
@@ -499,15 +570,12 @@ export default function App() {
                       </div>
                     </div>
                   )}
-
                   <CVPreview data={result} />
-
                   {result.tips?.length > 0 && (
                     <div className="tips-list">
                       {result.tips.map((tip, i) => <div className="tip-item" key={i}>{tip}</div>)}
                     </div>
                   )}
-
                   <div className="output-actions">
                     <button className="btn-action highlight" onClick={() => generatePDF(result)}>⬇ Download PDF</button>
                     <button className="btn-action primary" onClick={reset}>New CV</button>
@@ -523,7 +591,6 @@ export default function App() {
             </div>
           </div>
         </div>
-
         <div className="footer">ATS.CV — Powered by AI · Your CV is never stored · Free to use</div>
       </div>
     </>

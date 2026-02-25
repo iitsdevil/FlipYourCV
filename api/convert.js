@@ -1,6 +1,5 @@
 // api/convert.js
 // Vercel Serverless Function — uses Groq (FREE)
-// Now returns structured JSON for PDF generation
 // Get your free key at: https://console.groq.com
 
 export default async function handler(req, res) {
@@ -49,7 +48,20 @@ Analyze the CV below and return ONLY a valid JSON object (no markdown, no explan
     }
   ],
   "skills": ["Skill 1", "Skill 2", "Skill 3"],
-  "certifications": ["Certification 1", "Certification 2"],
+  "certifications": ["Certification 1"],
+  "languages": [
+    { "language": "Arabic", "level": "Native" },
+    { "language": "English", "level": "Fluent" }
+  ],
+  "hobbies": ["Reading", "Football", "Photography"],
+  "references": [
+    {
+      "name": "Reference Name",
+      "title": "Their Job Title",
+      "company": "Their Company",
+      "contact": "email or phone"
+    }
+  ],
   "score": 85,
   "tips": [
     "Tip 1 to improve ATS score",
@@ -59,12 +71,15 @@ Analyze the CV below and return ONLY a valid JSON object (no markdown, no explan
 }
 
 Rules:
-- Extract ALL experience entries from the CV
+- Extract ALL experience entries with their dates/duration — never leave duration empty
 - Each bullet point must start with a strong action verb
 - Skills should be individual items, not sentences
+- Extract ALL languages mentioned with proficiency level
+- Extract ALL hobbies or interests if mentioned
+- Extract references if mentioned, or use empty array []
+- If references say "available upon request" use: [{ "name": "Available upon request", "title": "", "company": "", "contact": "" }]
 - Score is ATS compatibility out of 100
 - If a field has no data, use empty string "" or empty array []
-- Certifications array can be empty if none exist
 - Return ONLY the JSON, nothing else
 
 CV to analyze:
@@ -99,12 +114,10 @@ ${cvText}`;
       return res.status(500).json({ error: "Empty response from AI. Please try again." });
     }
 
-    // Parse the JSON from the AI response
     let parsed;
     try {
       parsed = JSON.parse(text);
     } catch (e) {
-      // Try to extract JSON if wrapped in markdown
       const match = text.match(/\{[\s\S]*\}/);
       if (match) {
         parsed = JSON.parse(match[0]);
