@@ -142,7 +142,7 @@ function generatePDF(data) {
 
   // NAME
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(20);
+  doc.setFontSize(25);
   doc.setTextColor(10, 10, 10);
   doc.text(data.name || "Your Name", margin, y);
   y += 22;
@@ -150,7 +150,7 @@ function generatePDF(data) {
   // CONTACT LINE
   const contactParts = [data.email, data.phone, data.location, data.linkedin].filter(Boolean);
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(8);
+  doc.setFontSize(11);
   doc.setTextColor(80, 80, 80);
   doc.text(contactParts.join("  |  "), margin, y);
   y += 6;
@@ -163,7 +163,7 @@ function generatePDF(data) {
   if (data.summary) {
     sectionTitle("Professional Summary");
     doc.setFont("helvetica", "normal");
-    doc.setFontSize(9);
+    doc.setFontSize(11);
     doc.setTextColor(50, 50, 50);
     const summaryLines = doc.splitTextToSize(data.summary, contentW);
     summaryLines.forEach(line => {
@@ -181,11 +181,11 @@ function generatePDF(data) {
       checkPage(40);
       // Job title + duration on same line
       doc.setFont("helvetica", "bold");
-      doc.setFontSize(9.5);
+      doc.setFontSize(12);
       doc.setTextColor(10, 10, 10);
       doc.text(job.title || "", margin, y);
       doc.setFont("helvetica", "normal");
-      doc.setFontSize(8.5);
+      doc.setFontSize(9.5);
       doc.setTextColor(100, 100, 100);
       const durW = doc.getTextWidth(job.duration || "");
       doc.text(job.duration || "", margin + contentW - durW, y);
@@ -193,14 +193,14 @@ function generatePDF(data) {
 
       // Company
       doc.setFont("helvetica", "italic");
-      doc.setFontSize(8.5);
+      doc.setFontSize(9.5);
       doc.setTextColor(60, 60, 60);
       doc.text(job.company || "", margin, y);
       y += 12;
 
       // Bullets
       doc.setFont("helvetica", "normal");
-      doc.setFontSize(8.5);
+      doc.setFontSize(9.5);
       doc.setTextColor(50, 50, 50);
       (job.bullets || []).forEach(bullet => {
         const lines = doc.splitTextToSize(`• ${bullet}`, contentW - 10);
@@ -220,17 +220,17 @@ function generatePDF(data) {
     data.education.forEach(edu => {
       checkPage(28);
       doc.setFont("helvetica", "bold");
-      doc.setFontSize(9.5);
+      doc.setFontSize(12);
       doc.setTextColor(10, 10, 10);
       doc.text(edu.degree || "", margin, y);
       doc.setFont("helvetica", "normal");
-      doc.setFontSize(8.5);
+      doc.setFontSize(11);
       doc.setTextColor(100, 100, 100);
       const yearW = doc.getTextWidth(edu.year || "");
       doc.text(edu.year || "", margin + contentW - yearW, y);
       y += 13;
       doc.setFont("helvetica", "normal");
-      doc.setFontSize(8.5);
+      doc.setFontSize(9.5);
       doc.setTextColor(60, 60, 60);
       doc.text(edu.institution || "", margin, y);
       y += 16;
@@ -241,7 +241,7 @@ function generatePDF(data) {
   if (data.skills?.length > 0) {
     sectionTitle("Skills");
     doc.setFont("helvetica", "normal");
-    doc.setFontSize(8.5);
+    doc.setFontSize(11);
     doc.setTextColor(50, 50, 50);
     const skillsText = data.skills.join("  •  ");
     const skillLines = doc.splitTextToSize(skillsText, contentW);
@@ -257,7 +257,7 @@ function generatePDF(data) {
   if (data.certifications?.length > 0) {
     sectionTitle("Certifications");
     doc.setFont("helvetica", "normal");
-    doc.setFontSize(8.5);
+    doc.setFontSize(11);
     doc.setTextColor(50, 50, 50);
     data.certifications.forEach(cert => {
       checkPage(13);
