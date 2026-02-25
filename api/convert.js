@@ -1,5 +1,6 @@
 // api/convert.js
 // Vercel Serverless Function — uses Groq (FREE)
+// Now returns structured JSON for PDF generation
 // Get your free key at: https://console.groq.com
 
 export default async function handler(req, res) {
@@ -17,24 +18,56 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "CV text is too long (max 20,000 characters)" });
   }
 
-  const prompt = `You are an expert ATS (Applicant Tracking System) CV optimizer. 
+  const prompt = `You are an expert ATS (Applicant Tracking System) CV optimizer.
+${jobTitle ? `The target job role is: "${jobTitle}"` : ""}
 
-The user has provided their CV content. Your job is to:
-1. Parse and understand their experience, skills, education, and achievements
-2. Reformat it into a clean, ATS-friendly CV
-3. Use standard section headers (PROFESSIONAL SUMMARY, WORK EXPERIENCE, EDUCATION, SKILLS, CERTIFICATIONS if applicable)
-4. Use simple bullet points with action verbs and quantifiable achievements
-5. Remove tables, columns, graphics, special characters
-6. Optimize keywords for ATS scanning
-7. Keep formatting simple: plain text with clear section breaks
-${jobTitle ? `8. Tailor the CV for this target role: "${jobTitle}"` : ""}
+Analyze the CV below and return ONLY a valid JSON object (no markdown, no explanation, just raw JSON) in this exact structure:
 
-After the CV, add a section called "--- ATS SCORE & TIPS ---" and give:
-- An ATS compatibility score out of 100 (format: SCORE: XX/100)
-- 3-4 specific improvement tips
+{
+  "name": "Full Name",
+  "email": "email@example.com",
+  "phone": "phone number",
+  "location": "City, Country",
+  "linkedin": "linkedin URL or empty string",
+  "summary": "2-3 sentence professional summary optimized for ATS",
+  "experience": [
+    {
+      "title": "Job Title",
+      "company": "Company Name",
+      "duration": "Jan 2020 - Dec 2022",
+      "bullets": [
+        "Achievement or responsibility with action verb and metrics",
+        "Another bullet point"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "degree": "Degree Name",
+      "institution": "University Name",
+      "year": "2019"
+    }
+  ],
+  "skills": ["Skill 1", "Skill 2", "Skill 3"],
+  "certifications": ["Certification 1", "Certification 2"],
+  "score": 85,
+  "tips": [
+    "Tip 1 to improve ATS score",
+    "Tip 2 to improve ATS score",
+    "Tip 3 to improve ATS score"
+  ]
+}
 
-Here is the CV to convert:
+Rules:
+- Extract ALL experience entries from the CV
+- Each bullet point must start with a strong action verb
+- Skills should be individual items, not sentences
+- Score is ATS compatibility out of 100
+- If a field has no data, use empty string "" or empty array []
+- Certifications array can be empty if none exist
+- Return ONLY the JSON, nothing else
 
+CV to analyze:
 ${cvText}`;
 
   try {
@@ -47,8 +80,9 @@ ${cvText}`;
       body: JSON.stringify({
         model: "llama-3.3-70b-versatile",
         messages: [{ role: "user", content: prompt }],
-        max_tokens: 2000,
-        temperature: 0.7,
+        max_tokens: 3000,
+        temperature: 0.3,
+        response_format: { type: "json_object" },
       }),
     });
 
@@ -65,9 +99,23 @@ ${cvText}`;
       return res.status(500).json({ error: "Empty response from AI. Please try again." });
     }
 
-    return res.status(200).json({ result: text });
+    // Parse the JSON from the AI response
+    let parsed;
+    try {
+      parsed = JSON.parse(text);
+    } catch (e) {
+      // Try to extract JSON if wrapped in markdown
+      const match = text.match(/\{[\s\S]*\}/);
+      if (match) {
+        parsed = JSON.parse(match[0]);
+      } else {
+        throw new Error("Could not parse AI response as JSON");
+      }
+    }
+
+    return res.status(200).json({ result: parsed });
   } catch (error) {
     console.error("Server error:", error);
-    return res.status(500).json({ error: "Internal server error. Please try again." });
+    return res.status(500).json({ error: "Internal server error: " + error.message });
   }
 }

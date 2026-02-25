@@ -1,393 +1,106 @@
 import { useState, useRef } from "react";
 import * as mammoth from "mammoth";
+import jsPDF from "jspdf";
 
 const STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap');
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
   :root {
-    --bg: #0a0a0a;
-    --surface: #111111;
-    --surface2: #1a1a1a;
-    --border: #2a2a2a;
-    --accent: #c8f542;
-    --accent2: #f5e642;
-    --text: #f0f0f0;
-    --muted: #666;
-    --danger: #ff4545;
+    --bg: #0a0a0a; --surface: #111111; --surface2: #1a1a1a;
+    --border: #2a2a2a; --accent: #c8f542; --accent2: #f5e642;
+    --text: #f0f0f0; --muted: #666; --danger: #ff4545;
   }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Syne', sans-serif;
-    min-height: 100vh;
-  }
-
-  .app {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 40px 24px 80px;
-  }
-
-  .header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    margin-bottom: 56px;
-    padding-bottom: 32px;
-    border-bottom: 1px solid var(--border);
-  }
-  .logo-area h1 {
-    font-family: 'DM Serif Display', serif;
-    font-size: clamp(2rem, 5vw, 3.2rem);
-    line-height: 1.05;
-    letter-spacing: -1px;
-  }
+  body { background: var(--bg); color: var(--text); font-family: 'Syne', sans-serif; min-height: 100vh; }
+  .app { max-width: 1100px; margin: 0 auto; padding: 40px 24px 80px; }
+  .header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 56px; padding-bottom: 32px; border-bottom: 1px solid var(--border); }
+  .logo-area h1 { font-family: 'DM Serif Display', serif; font-size: clamp(2rem, 5vw, 3.2rem); line-height: 1.05; letter-spacing: -1px; }
   .logo-area h1 span { color: var(--accent); }
-  .logo-area p {
-    color: var(--muted);
-    font-family: 'DM Mono', monospace;
-    font-size: 1rem;
-    margin-top: 8px;
-    letter-spacing: 0.05em;
-  }
-  .badge {
-    background: var(--accent);
-    color: #0a0a0a;
-    font-size: 0.9rem;
-    font-weight: 700;
-    padding: 4px 10px;
-    border-radius: 2px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    margin-top: 8px;
-    display: inline-block;
-  }
-
-  .main-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-    align-items: start;
-  }
-  @media (max-width: 700px) {
-    .main-grid { grid-template-columns: 1fr; }
-  }
-
-  .panel {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    overflow: hidden;
-  }
-  .panel-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--border);
-    background: var(--surface2);
-  }
-  .panel-header .num {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--accent);
-    background: rgba(200,245,66,0.1);
-    padding: 2px 8px;
-    border-radius: 2px;
-  }
-  .panel-header h2 {
-    font-size: 0.85rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
+  .logo-area p { color: var(--muted); font-family: 'DM Mono', monospace; font-size: 1rem; margin-top: 8px; letter-spacing: 0.05em; }
+  .badge { background: var(--accent); color: #0a0a0a; font-size: 0.9rem; font-weight: 700; padding: 4px 10px; border-radius: 2px; letter-spacing: 0.1em; text-transform: uppercase; margin-top: 8px; display: inline-block; }
+  .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+  @media (max-width: 700px) { .main-grid { grid-template-columns: 1fr; } }
+  .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+  .panel-header { display: flex; align-items: center; gap: 10px; padding: 16px 20px; border-bottom: 1px solid var(--border); background: var(--surface2); }
+  .panel-header .num { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--accent); background: rgba(200,245,66,0.1); padding: 2px 8px; border-radius: 2px; }
+  .panel-header h2 { font-size: 0.85rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
   .panel-body { padding: 20px; }
-
-  .upload-zone {
-    border: 1.5px dashed var(--border);
-    border-radius: 4px;
-    padding: 48px 24px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.2s;
-    position: relative;
-  }
-  .upload-zone:hover, .upload-zone.dragging {
-    border-color: var(--accent);
-    background: rgba(200,245,66,0.03);
-  }
-  .upload-zone input {
-    position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
-  }
+  .upload-zone { border: 1.5px dashed var(--border); border-radius: 4px; padding: 48px 24px; text-align: center; cursor: pointer; transition: all 0.2s; position: relative; }
+  .upload-zone:hover, .upload-zone.dragging { border-color: var(--accent); background: rgba(200,245,66,0.03); }
+  .upload-zone input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
   .upload-icon { font-size: 2.5rem; margin-bottom: 12px; display: block; }
   .upload-zone h3 { font-size: 1rem; font-weight: 600; margin-bottom: 6px; }
   .upload-zone p { font-size: 0.8rem; color: var(--muted); font-family: 'DM Mono', monospace; }
-
-  .file-loaded {
-    border: 1px solid rgba(200,245,66,0.3);
-    background: rgba(200,245,66,0.04);
-    border-radius: 4px;
-    padding: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-  }
+  .file-loaded { border: 1px solid rgba(200,245,66,0.3); background: rgba(200,245,66,0.04); border-radius: 4px; padding: 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
   .file-loaded .file-info { flex: 1; min-width: 0; }
-  .file-loaded .file-name {
-    font-size: 0.85rem;
-    font-weight: 600;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    color: var(--accent);
-  }
-  .file-loaded .file-meta {
-    font-size: 0.7rem;
-    color: var(--muted);
-    font-family: 'DM Mono', monospace;
-    margin-top: 2px;
-  }
-  .btn-remove {
-    background: none;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    padding: 4px 10px;
-    cursor: pointer;
-    font-size: 0.75rem;
-    border-radius: 2px;
-    font-family: 'Syne', sans-serif;
-    transition: all 0.2s;
-    white-space: nowrap;
-  }
+  .file-loaded .file-name { font-size: 0.85rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--accent); }
+  .file-loaded .file-meta { font-size: 0.7rem; color: var(--muted); font-family: 'DM Mono', monospace; margin-top: 2px; }
+  .btn-remove { background: none; border: 1px solid var(--border); color: var(--muted); padding: 4px 10px; cursor: pointer; font-size: 0.75rem; border-radius: 2px; font-family: 'Syne', sans-serif; transition: all 0.2s; white-space: nowrap; }
   .btn-remove:hover { border-color: var(--danger); color: var(--danger); }
-
-  .cv-textarea {
-    width: 100%;
-    min-height: 220px;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-family: 'DM Mono', monospace;
-    font-size: 0.78rem;
-    line-height: 1.6;
-    padding: 14px;
-    border-radius: 4px;
-    resize: vertical;
-    transition: border-color 0.2s;
-    margin-top: 16px;
-  }
+  .cv-textarea { width: 100%; min-height: 220px; background: var(--bg); border: 1px solid var(--border); color: var(--text); font-family: 'DM Mono', monospace; font-size: 0.78rem; line-height: 1.6; padding: 14px; border-radius: 4px; resize: vertical; transition: border-color 0.2s; margin-top: 16px; }
   .cv-textarea:focus { outline: none; border-color: var(--accent); }
   .cv-textarea::placeholder { color: var(--muted); }
-
-  .field-label {
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 8px;
-    margin-top: 16px;
-    display: block;
-  }
-  .job-input {
-    width: 100%;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-family: 'Syne', sans-serif;
-    font-size: 0.9rem;
-    padding: 10px 14px;
-    border-radius: 4px;
-    transition: border-color 0.2s;
-  }
+  .field-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; margin-top: 16px; display: block; }
+  .job-input { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); font-family: 'Syne', sans-serif; font-size: 0.9rem; padding: 10px 14px; border-radius: 4px; transition: border-color 0.2s; }
   .job-input:focus { outline: none; border-color: var(--accent); }
   .job-input::placeholder { color: var(--muted); }
-
-  .btn-convert {
-    width: 100%;
-    margin-top: 20px;
-    padding: 14px;
-    background: var(--accent);
-    color: #0a0a0a;
-    border: none;
-    font-family: 'Syne', sans-serif;
-    font-size: 0.85rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-  }
+  .btn-convert { width: 100%; margin-top: 20px; padding: 14px; background: var(--accent); color: #0a0a0a; border: none; font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; border-radius: 4px; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
   .btn-convert:hover:not(:disabled) { background: var(--accent2); transform: translateY(-1px); }
   .btn-convert:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
-
-  .spinner {
-    width: 16px; height: 16px;
-    border: 2px solid rgba(0,0,0,0.3);
-    border-top-color: #0a0a0a;
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-  }
+  .spinner { width: 16px; height: 16px; border: 2px solid rgba(0,0,0,0.3); border-top-color: #0a0a0a; border-radius: 50%; animation: spin 0.7s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
-
-  .output-empty {
-    min-height: 380px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    color: var(--muted);
-    text-align: center;
-  }
+  .output-empty { min-height: 380px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: var(--muted); text-align: center; }
   .output-empty .arrow { font-size: 2rem; animation: float 2s ease-in-out infinite; }
   @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
   .output-empty p { font-size: 0.8rem; font-family: 'DM Mono', monospace; }
-
-  .output-content {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.78rem;
-    line-height: 1.7;
-    white-space: pre-wrap;
-    color: var(--text);
-    max-height: 520px;
-    overflow-y: auto;
-    padding-right: 8px;
-  }
-  .output-content::-webkit-scrollbar { width: 4px; }
-  .output-content::-webkit-scrollbar-track { background: var(--surface2); }
-  .output-content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-
-  .output-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 16px;
-    padding-top: 16px;
-    border-top: 1px solid var(--border);
-  }
-  .btn-action {
-    flex: 1;
-    padding: 10px;
-    background: none;
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-family: 'Syne', sans-serif;
-    font-size: 0.78rem;
-    font-weight: 600;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: all 0.2s;
-    letter-spacing: 0.05em;
-  }
+  .output-actions { display: flex; gap: 10px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); flex-wrap: wrap; }
+  .btn-action { flex: 1; min-width: 100px; padding: 10px; background: none; border: 1px solid var(--border); color: var(--text); font-family: 'Syne', sans-serif; font-size: 0.78rem; font-weight: 600; cursor: pointer; border-radius: 4px; transition: all 0.2s; letter-spacing: 0.05em; }
   .btn-action:hover { border-color: var(--accent); color: var(--accent); }
   .btn-action.primary { background: var(--surface2); }
-
-  .score-card {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 16px;
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-  }
-  .score-num {
-    font-family: 'DM Serif Display', serif;
-    font-size: 2.8rem;
-    color: var(--accent);
-    line-height: 1;
-    min-width: 70px;
-  }
+  .btn-action.highlight { background: var(--accent); color: #0a0a0a; border-color: var(--accent); }
+  .btn-action.highlight:hover { background: var(--accent2); border-color: var(--accent2); color: #0a0a0a; }
+  .score-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; padding: 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 20px; }
+  .score-num { font-family: 'DM Serif Display', serif; font-size: 2.8rem; color: var(--accent); line-height: 1; min-width: 70px; }
   .score-details { flex: 1; }
   .score-details h4 { font-size: 0.85rem; font-weight: 700; margin-bottom: 4px; }
   .score-details p { font-size: 0.72rem; color: var(--muted); font-family: 'DM Mono', monospace; }
-  .score-bar {
-    width: 100%;
-    height: 4px;
-    background: var(--border);
-    border-radius: 2px;
-    margin-top: 8px;
-    overflow: hidden;
-  }
-  .score-bar-fill {
-    height: 100%;
-    background: var(--accent);
-    border-radius: 2px;
-    transition: width 1s ease;
-  }
-
-  .tips-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-top: 16px;
-  }
-  .tip {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 12px;
-    font-size: 0.72rem;
-    color: var(--muted);
-    font-family: 'DM Mono', monospace;
-    line-height: 1.5;
-  }
+  .score-bar { width: 100%; height: 4px; background: var(--border); border-radius: 2px; margin-top: 8px; overflow: hidden; }
+  .score-bar-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 1s ease; }
+  .cv-preview { background: white; color: #1a1a1a; border-radius: 4px; padding: 32px 28px; font-family: 'Arial', sans-serif; font-size: 0.8rem; line-height: 1.5; max-height: 500px; overflow-y: auto; }
+  .cv-preview::-webkit-scrollbar { width: 4px; }
+  .cv-preview::-webkit-scrollbar-track { background: #f0f0f0; }
+  .cv-preview::-webkit-scrollbar-thumb { background: #ccc; border-radius: 2px; }
+  .cv-name { font-size: 1.4rem; font-weight: 700; color: #111; margin-bottom: 4px; }
+  .cv-contact { font-size: 0.72rem; color: #555; margin-bottom: 12px; display: flex; flex-wrap: wrap; gap: 8px; }
+  .cv-contact span::after { content: ' |'; margin-left: 8px; color: #ccc; }
+  .cv-contact span:last-child::after { content: ''; }
+  .cv-section-title { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #111; border-bottom: 1.5px solid #111; padding-bottom: 3px; margin: 14px 0 8px; }
+  .cv-summary { font-size: 0.78rem; color: #333; line-height: 1.6; }
+  .cv-job { margin-bottom: 10px; }
+  .cv-job-header { display: flex; justify-content: space-between; align-items: baseline; }
+  .cv-job-title { font-weight: 700; font-size: 0.82rem; color: #111; }
+  .cv-job-company { font-size: 0.78rem; color: #444; }
+  .cv-job-duration { font-size: 0.72rem; color: #777; white-space: nowrap; }
+  .cv-bullets { margin: 4px 0 0 16px; }
+  .cv-bullets li { font-size: 0.76rem; color: #333; margin-bottom: 2px; }
+  .cv-edu-row { display: flex; justify-content: space-between; margin-bottom: 4px; }
+  .cv-edu-degree { font-weight: 600; font-size: 0.78rem; }
+  .cv-edu-school { font-size: 0.76rem; color: #555; }
+  .cv-edu-year { font-size: 0.72rem; color: #777; }
+  .cv-skills-wrap { display: flex; flex-wrap: wrap; gap: 6px; }
+  .cv-skill { background: #f0f0f0; border-radius: 2px; padding: 2px 8px; font-size: 0.72rem; color: #333; }
+  .tips-list { margin-top: 12px; }
+  .tip-item { display: flex; gap: 8px; padding: 8px 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; margin-bottom: 6px; font-size: 0.75rem; color: var(--muted); font-family: 'DM Mono', monospace; line-height: 1.5; }
+  .tip-item::before { content: '→'; color: var(--accent); flex-shrink: 0; }
+  .tips-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 16px; }
+  .tip { background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; padding: 12px; font-size: 0.72rem; color: var(--muted); font-family: 'DM Mono', monospace; line-height: 1.5; }
   .tip strong { color: var(--text); display: block; margin-bottom: 2px; font-size: 0.75rem; }
-
-  .loading-state {
-    min-height: 380px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 16px;
-  }
-  .loading-state .big-spinner {
-    width: 40px; height: 40px;
-    border: 3px solid var(--border);
-    border-top-color: var(--accent);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
-  .loading-state p {
-    font-size: 0.8rem;
-    color: var(--muted);
-    font-family: 'DM Mono', monospace;
-    animation: pulse 1.5s ease-in-out infinite;
-  }
+  .loading-state { min-height: 380px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; }
+  .loading-state .big-spinner { width: 40px; height: 40px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
+  .loading-state p { font-size: 0.8rem; color: var(--muted); font-family: 'DM Mono', monospace; animation: pulse 1.5s ease-in-out infinite; }
   @keyframes pulse { 0%,100%{opacity:0.5} 50%{opacity:1} }
-
-  .error-box {
-    background: rgba(255,69,69,0.08);
-    border: 1px solid rgba(255,69,69,0.3);
-    border-radius: 4px;
-    padding: 12px 16px;
-    font-size: 0.8rem;
-    color: #ff7070;
-    font-family: 'DM Mono', monospace;
-    margin-top: 12px;
-    line-height: 1.5;
-  }
-
-  .footer {
-    text-align: center;
-    margin-top: 60px;
-    padding-top: 24px;
-    border-top: 1px solid var(--border);
-    font-size: 0.7rem;
-    color: var(--muted);
-    font-family: 'DM Mono', monospace;
-  }
+  .error-box { background: rgba(255,69,69,0.08); border: 1px solid rgba(255,69,69,0.3); border-radius: 4px; padding: 12px 16px; font-size: 0.8rem; color: #ff7070; font-family: 'DM Mono', monospace; margin-top: 12px; line-height: 1.5; }
+  .footer { text-align: center; margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border); font-size: 0.7rem; color: var(--muted); font-family: 'DM Mono', monospace; }
 `;
 
 const LOADING_MESSAGES = [
@@ -395,9 +108,242 @@ const LOADING_MESSAGES = [
   "Identifying key skills and experience...",
   "Reformatting for ATS compatibility...",
   "Optimizing keywords and sections...",
-  "Running final ATS checks...",
+  "Generating your PDF layout...",
 ];
 
+// ─── PDF Generator ───────────────────────────────────────────────────────────
+function generatePDF(data) {
+  const doc = new jsPDF({ unit: "pt", format: "a4" });
+  const pageW = doc.internal.pageSize.getWidth();
+  const pageH = doc.internal.pageSize.getHeight();
+  const margin = 50;
+  const contentW = pageW - margin * 2;
+  let y = 50;
+
+  const checkPage = (needed = 20) => {
+    if (y + needed > pageH - 40) {
+      doc.addPage();
+      y = 50;
+    }
+  };
+
+  const sectionTitle = (text) => {
+    checkPage(30);
+    y += 10;
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(8);
+    doc.setTextColor(30, 30, 30);
+    doc.text(text.toUpperCase(), margin, y);
+    doc.setDrawColor(30, 30, 30);
+    doc.setLineWidth(1);
+    doc.line(margin, y + 3, margin + contentW, y + 3);
+    y += 14;
+  };
+
+  // NAME
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(20);
+  doc.setTextColor(10, 10, 10);
+  doc.text(data.name || "Your Name", margin, y);
+  y += 22;
+
+  // CONTACT LINE
+  const contactParts = [data.email, data.phone, data.location, data.linkedin].filter(Boolean);
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(8);
+  doc.setTextColor(80, 80, 80);
+  doc.text(contactParts.join("  |  "), margin, y);
+  y += 6;
+  doc.setDrawColor(200, 200, 200);
+  doc.setLineWidth(0.5);
+  doc.line(margin, y, margin + contentW, y);
+  y += 14;
+
+  // SUMMARY
+  if (data.summary) {
+    sectionTitle("Professional Summary");
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9);
+    doc.setTextColor(50, 50, 50);
+    const summaryLines = doc.splitTextToSize(data.summary, contentW);
+    summaryLines.forEach(line => {
+      checkPage(13);
+      doc.text(line, margin, y);
+      y += 13;
+    });
+    y += 4;
+  }
+
+  // EXPERIENCE
+  if (data.experience?.length > 0) {
+    sectionTitle("Work Experience");
+    data.experience.forEach(job => {
+      checkPage(40);
+      // Job title + duration on same line
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(9.5);
+      doc.setTextColor(10, 10, 10);
+      doc.text(job.title || "", margin, y);
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(8.5);
+      doc.setTextColor(100, 100, 100);
+      const durW = doc.getTextWidth(job.duration || "");
+      doc.text(job.duration || "", margin + contentW - durW, y);
+      y += 13;
+
+      // Company
+      doc.setFont("helvetica", "italic");
+      doc.setFontSize(8.5);
+      doc.setTextColor(60, 60, 60);
+      doc.text(job.company || "", margin, y);
+      y += 12;
+
+      // Bullets
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(8.5);
+      doc.setTextColor(50, 50, 50);
+      (job.bullets || []).forEach(bullet => {
+        const lines = doc.splitTextToSize(`• ${bullet}`, contentW - 10);
+        lines.forEach((line, i) => {
+          checkPage(12);
+          doc.text(i === 0 ? line : `  ${line.trim()}`, margin + 6, y);
+          y += 12;
+        });
+      });
+      y += 6;
+    });
+  }
+
+  // EDUCATION
+  if (data.education?.length > 0) {
+    sectionTitle("Education");
+    data.education.forEach(edu => {
+      checkPage(28);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(9.5);
+      doc.setTextColor(10, 10, 10);
+      doc.text(edu.degree || "", margin, y);
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(8.5);
+      doc.setTextColor(100, 100, 100);
+      const yearW = doc.getTextWidth(edu.year || "");
+      doc.text(edu.year || "", margin + contentW - yearW, y);
+      y += 13;
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(8.5);
+      doc.setTextColor(60, 60, 60);
+      doc.text(edu.institution || "", margin, y);
+      y += 16;
+    });
+  }
+
+  // SKILLS
+  if (data.skills?.length > 0) {
+    sectionTitle("Skills");
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8.5);
+    doc.setTextColor(50, 50, 50);
+    const skillsText = data.skills.join("  •  ");
+    const skillLines = doc.splitTextToSize(skillsText, contentW);
+    skillLines.forEach(line => {
+      checkPage(13);
+      doc.text(line, margin, y);
+      y += 13;
+    });
+    y += 4;
+  }
+
+  // CERTIFICATIONS
+  if (data.certifications?.length > 0) {
+    sectionTitle("Certifications");
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8.5);
+    doc.setTextColor(50, 50, 50);
+    data.certifications.forEach(cert => {
+      checkPage(13);
+      doc.text(`• ${cert}`, margin + 6, y);
+      y += 13;
+    });
+  }
+
+  doc.save("ats-optimized-cv.pdf");
+}
+
+// ─── CV Preview Component ─────────────────────────────────────────────────────
+function CVPreview({ data }) {
+  return (
+    <div className="cv-preview">
+      <div className="cv-name">{data.name || "Your Name"}</div>
+      <div className="cv-contact">
+        {[data.email, data.phone, data.location, data.linkedin].filter(Boolean).map((c, i) => (
+          <span key={i}>{c}</span>
+        ))}
+      </div>
+
+      {data.summary && (
+        <>
+          <div className="cv-section-title">Professional Summary</div>
+          <div className="cv-summary">{data.summary}</div>
+        </>
+      )}
+
+      {data.experience?.length > 0 && (
+        <>
+          <div className="cv-section-title">Work Experience</div>
+          {data.experience.map((job, i) => (
+            <div className="cv-job" key={i}>
+              <div className="cv-job-header">
+                <div>
+                  <span className="cv-job-title">{job.title}</span>
+                  {job.company && <span className="cv-job-company"> — {job.company}</span>}
+                </div>
+                <span className="cv-job-duration">{job.duration}</span>
+              </div>
+              <ul className="cv-bullets">
+                {(job.bullets || []).map((b, j) => <li key={j}>{b}</li>)}
+              </ul>
+            </div>
+          ))}
+        </>
+      )}
+
+      {data.education?.length > 0 && (
+        <>
+          <div className="cv-section-title">Education</div>
+          {data.education.map((edu, i) => (
+            <div className="cv-edu-row" key={i}>
+              <div>
+                <div className="cv-edu-degree">{edu.degree}</div>
+                <div className="cv-edu-school">{edu.institution}</div>
+              </div>
+              <div className="cv-edu-year">{edu.year}</div>
+            </div>
+          ))}
+        </>
+      )}
+
+      {data.skills?.length > 0 && (
+        <>
+          <div className="cv-section-title">Skills</div>
+          <div className="cv-skills-wrap">
+            {data.skills.map((s, i) => <span className="cv-skill" key={i}>{s}</span>)}
+          </div>
+        </>
+      )}
+
+      {data.certifications?.length > 0 && (
+        <>
+          <div className="cv-section-title">Certifications</div>
+          <ul className="cv-bullets">
+            {data.certifications.map((c, i) => <li key={i}>{c}</li>)}
+          </ul>
+        </>
+      )}
+    </div>
+  );
+}
+
+// ─── Main App ─────────────────────────────────────────────────────────────────
 export default function App() {
   const [file, setFile] = useState(null);
   const [rawText, setRawText] = useState("");
@@ -407,24 +353,17 @@ export default function App() {
   const [loadingMsg, setLoadingMsg] = useState("");
   const [error, setError] = useState("");
   const [dragging, setDragging] = useState(false);
-  const [copied, setCopied] = useState(false);
   const fileInputRef = useRef();
 
   const extractText = async (f) => {
     const ext = f.name.split(".").pop().toLowerCase();
-
-    if (ext === "txt") {
-      return await f.text();
-    }
-
+    if (ext === "txt") return await f.text();
     if (ext === "docx") {
       const buf = await f.arrayBuffer();
       const res = await mammoth.extractRawText({ arrayBuffer: buf });
       return res.value;
     }
-
     if (ext === "pdf") {
-      // Dynamically import pdfjs to avoid SSR issues
       const pdfjsLib = await import("pdfjs-dist");
       pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
       const buf = await f.arrayBuffer();
@@ -437,7 +376,6 @@ export default function App() {
       }
       return text;
     }
-
     throw new Error("Unsupported file type. Please upload PDF, DOCX, or TXT.");
   };
 
@@ -453,58 +391,27 @@ export default function App() {
     }
   };
 
-  const handleDrop = (e) => {
-    e.preventDefault();
-    setDragging(false);
-    const f = e.dataTransfer.files[0];
-    if (f) handleFile(f);
-  };
-
   const convert = async () => {
     const cvContent = rawText.trim();
-    if (!cvContent) {
-      setError("Please upload a CV or paste your CV text.");
-      return;
-    }
-
+    if (!cvContent) { setError("Please upload a CV or paste your CV text."); return; }
     setLoading(true);
     setResult(null);
     setError("");
-
     let msgIdx = 0;
     setLoadingMsg(LOADING_MESSAGES[0]);
     const interval = setInterval(() => {
       msgIdx = (msgIdx + 1) % LOADING_MESSAGES.length;
       setLoadingMsg(LOADING_MESSAGES[msgIdx]);
     }, 2000);
-
     try {
-      // ✅ Calls OUR backend, not Anthropic directly
-      // The API key stays safely on the server
       const response = await fetch("/api/convert", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ cvText: cvContent, jobTitle }),
       });
-
       const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Something went wrong");
-      }
-
-      const text = data.result || "";
-
-      // Parse score
-      const scoreMatch = text.match(/SCORE:\s*(\d+)\/100/i);
-      const score = scoreMatch ? parseInt(scoreMatch[1]) : null;
-
-      // Split CV from tips
-      const splitIdx = text.indexOf("--- ATS SCORE");
-      const cvPart = splitIdx > -1 ? text.slice(0, splitIdx).trim() : text;
-      const tipsPart = splitIdx > -1 ? text.slice(splitIdx).trim() : "";
-
-      setResult({ cv: cvPart, tips: tipsPart, score });
+      if (!response.ok) throw new Error(data.error || "Something went wrong");
+      setResult(data.result);
     } catch (e) {
       setError("Error: " + e.message);
     } finally {
@@ -513,32 +420,7 @@ export default function App() {
     }
   };
 
-  const copy = () => {
-    if (result?.cv) {
-      navigator.clipboard.writeText(result.cv);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    }
-  };
-
-  const download = () => {
-    if (!result?.cv) return;
-    const blob = new Blob([result.cv], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "ats-optimized-cv.txt";
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-
-  const reset = () => {
-    setFile(null);
-    setRawText("");
-    setResult(null);
-    setError("");
-    setJobTitle("");
-  };
+  const reset = () => { setFile(null); setRawText(""); setResult(null); setError(""); setJobTitle(""); };
 
   return (
     <>
@@ -553,28 +435,18 @@ export default function App() {
         </div>
 
         <div className="main-grid">
-          {/* INPUT PANEL */}
+          {/* INPUT */}
           <div>
             <div className="panel">
-              <div className="panel-header">
-                <span className="num">01</span>
-                <h2>Your CV</h2>
-              </div>
+              <div className="panel-header"><span className="num">01</span><h2>Your CV</h2></div>
               <div className="panel-body">
                 {!file ? (
-                  <div
-                    className={`upload-zone ${dragging ? "dragging" : ""}`}
+                  <div className={`upload-zone ${dragging ? "dragging" : ""}`}
                     onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
                     onDragLeave={() => setDragging(false)}
-                    onDrop={handleDrop}
-                    onClick={() => fileInputRef.current?.click()}
-                  >
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      accept=".pdf,.docx,.txt"
-                      onChange={(e) => handleFile(e.target.files[0])}
-                    />
+                    onDrop={(e) => { e.preventDefault(); setDragging(false); handleFile(e.dataTransfer.files[0]); }}
+                    onClick={() => fileInputRef.current?.click()}>
+                    <input ref={fileInputRef} type="file" accept=".pdf,.docx,.txt" onChange={(e) => handleFile(e.target.files[0])} />
                     <span className="upload-icon">📄</span>
                     <h3>Drop your CV here</h3>
                     <p>PDF, DOCX, or TXT supported</p>
@@ -584,66 +456,31 @@ export default function App() {
                     <span>✅</span>
                     <div className="file-info">
                       <div className="file-name">{file.name}</div>
-                      <div className="file-meta">
-                        {(file.size / 1024).toFixed(1)} KB · {rawText.split(/\s+/).length} words extracted
-                      </div>
+                      <div className="file-meta">{(file.size / 1024).toFixed(1)} KB · {rawText.split(/\s+/).length} words extracted</div>
                     </div>
                     <button className="btn-remove" onClick={reset}>Remove</button>
                   </div>
                 )}
-
-                <textarea
-                  className="cv-textarea"
-                  placeholder="Or paste your CV text directly here..."
-                  value={rawText}
-                  onChange={(e) => setRawText(e.target.value)}
-                  rows={8}
-                />
-
+                <textarea className="cv-textarea" placeholder="Or paste your CV text directly here..." value={rawText} onChange={(e) => setRawText(e.target.value)} rows={8} />
                 <span className="field-label">Target Job Title (optional)</span>
-                <input
-                  className="job-input"
-                  placeholder="e.g. Senior Software Engineer, Marketing Manager..."
-                  value={jobTitle}
-                  onChange={(e) => setJobTitle(e.target.value)}
-                />
-
+                <input className="job-input" placeholder="e.g. Senior Software Engineer..." value={jobTitle} onChange={(e) => setJobTitle(e.target.value)} />
                 {error && <div className="error-box">⚠ {error}</div>}
-
-                <button
-                  className="btn-convert"
-                  onClick={convert}
-                  disabled={loading || !rawText.trim()}
-                >
-                  {loading ? (
-                    <><div className="spinner" /> Converting...</>
-                  ) : (
-                    <>Convert to ATS CV →</>
-                  )}
+                <button className="btn-convert" onClick={convert} disabled={loading || !rawText.trim()}>
+                  {loading ? <><div className="spinner" /> Converting...</> : <>Convert & Generate PDF →</>}
                 </button>
               </div>
             </div>
 
             <div className="tips-grid" style={{ marginTop: 16 }}>
-              {[
-                ["No Tables/Columns", "ATS can't read multi-column layouts or tables"],
-                ["Simple Fonts", "Stick to Arial, Calibri, or Times New Roman"],
-                ["Standard Sections", "Use exact headers ATS expects"],
-                ["Keywords Matter", "Mirror language from the job description"],
-              ].map(([title, desc]) => (
-                <div className="tip" key={title}>
-                  <strong>{title}</strong>{desc}
-                </div>
+              {[["No Tables/Columns","ATS can't read multi-column layouts"],["Simple Fonts","Arial, Calibri, Times New Roman"],["Standard Sections","Exact headers ATS expects"],["Keywords Matter","Mirror the job description"]].map(([t,d]) => (
+                <div className="tip" key={t}><strong>{t}</strong>{d}</div>
               ))}
             </div>
           </div>
 
-          {/* OUTPUT PANEL */}
+          {/* OUTPUT */}
           <div className="panel">
-            <div className="panel-header">
-              <span className="num">02</span>
-              <h2>ATS Optimized Output</h2>
-            </div>
+            <div className="panel-header"><span className="num">02</span><h2>ATS Optimized CV</h2></div>
             <div className="panel-body">
               {loading ? (
                 <div className="loading-state">
@@ -652,49 +489,42 @@ export default function App() {
                 </div>
               ) : result ? (
                 <>
-                  {result.score !== null && (
+                  {result.score != null && (
                     <div className="score-card">
                       <div className="score-num">{result.score}</div>
                       <div className="score-details">
                         <h4>ATS Compatibility Score</h4>
                         <p>out of 100 — {result.score >= 80 ? "Excellent!" : result.score >= 60 ? "Good, minor tweaks needed" : "Needs improvement"}</p>
-                        <div className="score-bar">
-                          <div className="score-bar-fill" style={{ width: `${result.score}%` }} />
-                        </div>
+                        <div className="score-bar"><div className="score-bar-fill" style={{ width: `${result.score}%` }} /></div>
                       </div>
                     </div>
                   )}
-                  <div className="output-content">{result.cv}</div>
-                  {result.tips && (
-                    <div style={{ marginTop: 16, padding: 14, background: "var(--surface2)", borderRadius: 4, border: "1px solid var(--border)" }}>
-                      <div style={{ fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--accent)", marginBottom: 8, fontFamily: "Syne" }}>
-                        AI Tips
-                      </div>
-                      <div style={{ fontFamily: "DM Mono, monospace", fontSize: "0.75rem", color: "var(--muted)", lineHeight: 1.6, whiteSpace: "pre-wrap" }}>
-                        {result.tips.replace("--- ATS SCORE & TIPS ---", "").replace(/SCORE:.*\n?/i, "").trim()}
-                      </div>
+
+                  <CVPreview data={result} />
+
+                  {result.tips?.length > 0 && (
+                    <div className="tips-list">
+                      {result.tips.map((tip, i) => <div className="tip-item" key={i}>{tip}</div>)}
                     </div>
                   )}
+
                   <div className="output-actions">
-                    <button className="btn-action" onClick={copy}>{copied ? "✓ Copied!" : "Copy Text"}</button>
-                    <button className="btn-action primary" onClick={download}>Download .txt</button>
-                    <button className="btn-action" onClick={reset}>New CV</button>
+                    <button className="btn-action highlight" onClick={() => generatePDF(result)}>⬇ Download PDF</button>
+                    <button className="btn-action primary" onClick={reset}>New CV</button>
                   </div>
                 </>
               ) : (
                 <div className="output-empty">
                   <span className="arrow">↑</span>
                   <p>Upload your CV and click convert</p>
-                  <p style={{ opacity: 0.5 }}>Your ATS-optimized CV will appear here</p>
+                  <p style={{ opacity: 0.5 }}>A clean ATS PDF will be generated</p>
                 </div>
               )}
             </div>
           </div>
         </div>
 
-        <div className="footer">
-           · Your CV is never stored ·
-        </div>
+        <div className="footer">ATS.CV — Powered by AI · Your CV is never stored · Free to use</div>
       </div>
     </>
   );
