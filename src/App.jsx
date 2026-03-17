@@ -525,8 +525,7 @@ export default function App() {
                   <div className={`upload-zone ${dragging ? "dragging" : ""}`}
                     onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
                     onDragLeave={() => setDragging(false)}
-                    onDrop={(e) => { e.preventDefault(); setDragging(false); handleFile(e.dataTransfer.files[0]); }}
-                    onClick={() => fileInputRef.current?.click()}>
+                    onDrop={(e) => { e.preventDefault(); setDragging(false); handleFile(e.dataTransfer.files[0]); }}>
                     <input ref={fileInputRef} type="file" accept=".pdf,.docx,.txt" onChange={(e) => handleFile(e.target.files[0])} />
                     <span className="upload-icon">📄</span>
                     <h3>Drop your CV here</h3>
