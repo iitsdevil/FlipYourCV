@@ -107,8 +107,27 @@ const STYLES = `
   .loading-state .big-spinner { width: 40px; height: 40px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
   .loading-state p { font-size: 0.8rem; color: var(--muted); font-family: 'DM Mono', monospace; animation: pulse 1.5s ease-in-out infinite; }
   @keyframes pulse { 0%,100%{opacity:0.5} 50%{opacity:1} }
-  .error-box { background: rgba(255,69,69,0.08); border: 1px solid rgba(255,69,69,0.3); border-radius: 4px; padding: 12px 16px; font-size: 0.8rem; color: #ff7070; font-family: 'DM Mono', monospace; margin-top: 12px; line-height: 1.5; }
   .footer { text-align: center; margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border); font-size: 0.7rem; color: var(--muted); font-family: 'DM Mono', monospace; }
+  /* TOASTS */
+  .toast-container { position: fixed; bottom: 24px; right: 24px; display: flex; flex-direction: column; gap: 8px; z-index: 9999; pointer-events: none; }
+  .toast { display: flex; align-items: flex-start; gap: 10px; padding: 12px 16px; border-radius: 4px; font-size: 0.78rem; font-family: 'DM Mono', monospace; line-height: 1.5; max-width: 360px; pointer-events: auto; animation: toastIn 0.25s ease forwards; border: 1px solid; }
+  @keyframes toastIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  .toast.dismissing { animation: toastOut 0.25s ease forwards; }
+  @keyframes toastOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(10px); } }
+  .toast-error { background: rgba(255,69,69,0.12); border-color: rgba(255,69,69,0.35); color: #ff7070; }
+  .toast-success { background: rgba(200,245,66,0.08); border-color: rgba(200,245,66,0.25); color: var(--accent); }
+  .toast-info { background: var(--surface2); border-color: var(--border); color: var(--muted); }
+  .toast-close { background: none; border: none; color: inherit; opacity: 0.7; cursor: pointer; font-size: 1.1rem; padding: 0; line-height: 1; flex-shrink: 0; margin-top: 1px; }
+  .toast-close:hover { opacity: 1; }
+  /* MOBILE FIXES */
+  @media (max-width: 480px) {
+    .tips-grid { grid-template-columns: 1fr; }
+    .score-card { flex-direction: column; gap: 10px; }
+    .score-num { font-size: 2.2rem; min-width: auto; }
+    .output-actions { flex-direction: column; }
+    .toast-container { right: 16px; left: 16px; bottom: 16px; }
+    .toast { max-width: 100%; }
+  }
 `;
 
 const LOADING_MESSAGES = [
@@ -349,6 +368,20 @@ function generatePDF(data) {
   doc.save("ats-optimized-cv.pdf");
 }
 
+// ─── Toast Container ─────────────────────────────────────────────────────────
+function ToastContainer({ toasts, onDismiss }) {
+  return (
+    <div className="toast-container">
+      {toasts.map(t => (
+        <div key={t.id} className={`toast toast-${t.type}${t.dismissing ? " dismissing" : ""}`}>
+          <span style={{ flex: 1 }}>{t.type === "error" ? "⚠ " : t.type === "success" ? "✓ " : "ℹ "}{t.message}</span>
+          <button className="toast-close" onClick={() => onDismiss(t.id)} aria-label="Dismiss">×</button>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 // ─── CV Preview ───────────────────────────────────────────────────────────────
 function CVPreview({ data }) {
   return (
@@ -438,9 +471,22 @@ export default function App() {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [loadingMsg, setLoadingMsg] = useState("");
-  const [error, setError] = useState("");
+  const [toasts, setToasts] = useState([]);
   const [dragging, setDragging] = useState(false);
   const fileInputRef = useRef();
+
+  const showToast = (message, type = "error") => {
+    const id = Date.now() + Math.random();
+    setToasts(prev => [...prev, { id, message, type, dismissing: false }]);
+    setTimeout(() => {
+      setToasts(prev => prev.map(t => t.id === id ? { ...t, dismissing: true } : t));
+      setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 260);
+    }, 4500);
+  };
+  const dismissToast = (id) => {
+    setToasts(prev => prev.map(t => t.id === id ? { ...t, dismissing: true } : t));
+    setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 260);
+  };
 
   const extractText = async (f) => {
     const ext = f.name.split(".").pop().toLowerCase();
@@ -468,20 +514,19 @@ export default function App() {
 
   const handleFile = async (f) => {
     if (!f) return;
-    setError("");
     const MAX_FILE_SIZE_MB = 10;
     if (f.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
-      setError(`File is too large (${(f.size / 1024 / 1024).toFixed(1)} MB). Please upload a file under ${MAX_FILE_SIZE_MB} MB.`);
+      showToast(`File too large (${(f.size / 1024 / 1024).toFixed(1)} MB). Max allowed is ${MAX_FILE_SIZE_MB} MB.`);
       return;
     }
     try { const text = await extractText(f); setFile(f); setRawText(text); }
-    catch (e) { setError(e.message); }
+    catch (e) { showToast(e.message); }
   };
 
   const convert = async () => {
     const cvContent = rawText.trim();
-    if (!cvContent) { setError("Please upload a CV or paste your CV text."); return; }
-    setLoading(true); setResult(null); setError("");
+    if (!cvContent) { showToast("Please upload a CV or paste your CV text."); return; }
+    setLoading(true); setResult(null);
     let msgIdx = 0;
     setLoadingMsg(LOADING_MESSAGES[0]);
     const interval = setInterval(() => { msgIdx = (msgIdx + 1) % LOADING_MESSAGES.length; setLoadingMsg(LOADING_MESSAGES[msgIdx]); }, 2000);
@@ -495,18 +540,19 @@ export default function App() {
       if (!response.ok) throw new Error(data.error || "Something went wrong");
       setResult(data.result);
     } catch (e) {
-      setError("Error: " + e.message);
+      showToast("Error: " + e.message);
     } finally {
       clearInterval(interval);
       setLoading(false);
     }
   };
 
-  const reset = () => { setFile(null); setRawText(""); setResult(null); setError(""); setJobTitle(""); };
+  const reset = () => { setFile(null); setRawText(""); setResult(null); setJobTitle(""); setToasts([]); };
 
   return (
     <>
       <style>{STYLES}</style>
+      <ToastContainer toasts={toasts} onDismiss={dismissToast} />
       <div className="app">
         <div className="header">
           <div className="logo-area">
@@ -544,7 +590,7 @@ export default function App() {
                 <textarea className="cv-textarea" placeholder="Or paste your CV text directly here..." value={rawText} onChange={(e) => setRawText(e.target.value)} rows={8} />
                 <span className="field-label">Target Job Title (optional)</span>
                 <input className="job-input" placeholder="e.g. Senior Software Engineer..." value={jobTitle} onChange={(e) => setJobTitle(e.target.value)} />
-                {error && <div className="error-box">⚠ {error}</div>}
+
                 <button className="btn-convert" onClick={convert} disabled={loading || !rawText.trim()}>
                   {loading ? <><div className="spinner" /> Converting...</> : <>Convert & Generate PDF →</>}
                 </button>
