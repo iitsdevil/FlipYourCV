@@ -2,10 +2,52 @@
 // Vercel Serverless Function — uses Groq (FREE)
 // Get your free key at: https://console.groq.com
 
+// ─── Simple in-memory rate limiter ───────────────────────────────────────────
+// Keeps a hit count per IP. Resets automatically when the serverless instance
+// is recycled. Fine for a low-traffic tool; swap for Redis/Upstash if needed.
+const RATE_LIMIT = 10;          // max requests
+const RATE_WINDOW_MS = 60_000;  // per minute
+const rateMap = new Map();      // { ip -> { count, windowStart } }
+
+function isRateLimited(ip) {
+  const now = Date.now();
+  const entry = rateMap.get(ip);
+  if (!entry || now - entry.windowStart > RATE_WINDOW_MS) {
+    rateMap.set(ip, { count: 1, windowStart: now });
+    return false;
+  }
+  if (entry.count >= RATE_LIMIT) return true;
+  entry.count++;
+  return false;
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
 export default async function handler(req, res) {
+  // ── API key validation ──────────────────────────────────────────────────────
+  if (!process.env.GROQ_API_KEY) {
+    console.error("GROQ_API_KEY environment variable is not set.");
+    return res.status(500).json({
+      error:
+        "Server misconfiguration: GROQ_API_KEY is not set. " +
+        "Add it in Vercel → Settings → Environment Variables.",
+    });
+  }
+  // ───────────────────────────────────────────────────────────────────────────
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
+
+  // ── Rate limiting ───────────────────────────────────────────────────────────
+  const clientIp =
+    req.headers["x-forwarded-for"]?.split(",")[0].trim() ||
+    req.socket?.remoteAddress ||
+    "unknown";
+  if (isRateLimited(clientIp)) {
+    return res.status(429).json({
+      error: `Too many requests. Please wait a minute and try again.`,
+    });
+  }
+  // ───────────────────────────────────────────────────────────────────────────
 
   const { cvText, jobTitle } = req.body;
 
@@ -104,6 +146,17 @@ ${cvText}`;
     if (!response.ok) {
       const err = await response.json();
       console.error("Groq API error:", err);
+      if (response.status === 401) {
+        return res.status(500).json({
+          error:
+            "Invalid GROQ_API_KEY. Check your key at https://console.groq.com and update the environment variable.",
+        });
+      }
+      if (response.status === 429) {
+        return res.status(429).json({
+          error: "Groq rate limit reached. Please try again in a moment.",
+        });
+      }
       return res.status(500).json({ error: "AI service error. Please try again." });
     }
 

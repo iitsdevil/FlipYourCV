@@ -469,6 +469,11 @@ export default function App() {
   const handleFile = async (f) => {
     if (!f) return;
     setError("");
+    const MAX_FILE_SIZE_MB = 10;
+    if (f.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
+      setError(`File is too large (${(f.size / 1024 / 1024).toFixed(1)} MB). Please upload a file under ${MAX_FILE_SIZE_MB} MB.`);
+      return;
+    }
     try { const text = await extractText(f); setFile(f); setRawText(text); }
     catch (e) { setError(e.message); }
   };

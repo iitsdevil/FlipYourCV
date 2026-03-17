@@ -1,6 +1,6 @@
 # ATS.CV — AI Resume Optimizer
 
-Convert any CV (PDF, DOCX, TXT) into an ATS-optimized resume using Claude AI.
+Convert any CV (PDF, DOCX, TXT) into an ATS-optimized resume using AI (Groq + LLaMA 3.3 70B).
 
 ---
 
@@ -33,7 +33,7 @@ npm install
 ```bash
 cp .env.example .env.local
 # Open .env.local and replace "your_api_key_here" with your real key
-# Get your key at: https://console.anthropic.com
+# Get your FREE key at: https://console.groq.com
 ```
 
 ### 3. Run locally
@@ -76,8 +76,8 @@ This is the most important step. Never put your API key in code.
 
 1. In your Vercel project, go to **Settings → Environment Variables**
 2. Add:
-   - **Name:** `ANTHROPIC_API_KEY`
-   - **Value:** your actual key from https://console.anthropic.com
+   - **Name:** `GROQ_API_KEY`
+   - **Value:** your actual key from https://console.groq.com
    - **Environment:** Production, Preview, Development (check all three)
 3. Click **Save**
 4. Go to **Deployments** and click **Redeploy** so it picks up the new variable
@@ -96,10 +96,10 @@ Browser (user)
      ▼
 Vercel Serverless Function  ← API key stored here as env variable
      │
-     │  POST https://api.anthropic.com/v1/messages
-     │  x-api-key: process.env.ANTHROPIC_API_KEY  ✅ Never sent to browser
+     │  POST https://api.groq.com/openai/v1/chat/completions
+     │  Authorization: Bearer process.env.GROQ_API_KEY  ✅ Never sent to browser
      ▼
-Claude AI
+Groq AI (LLaMA 3.3 70B)
      │
      ▼
 Vercel Function returns result to browser
