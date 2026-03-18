@@ -204,92 +204,90 @@ function generatePDF(data) {
   const doc = new jsPDF({ unit: "pt", format: "a4" });
   const pageW = doc.internal.pageSize.getWidth();
   const pageH = doc.internal.pageSize.getHeight();
-  const margin  = 36;          // ← was 50 — tighter side margins
+  const margin = 50;
   const contentW = pageW - margin * 2;
-  const LH  = 11;              // base line height
-  const LHS = 10;              // small line height (contact, meta)
-  let y = 38;
+  let y = 50;
 
-  const checkPage = (needed = 16) => {
-    if (y + needed > pageH - 32) { doc.addPage(); y = 38; }
+  const checkPage = (needed = 20) => {
+    if (y + needed > pageH - 40) { doc.addPage(); y = 50; }
   };
 
   const sectionTitle = (text) => {
-    checkPage(22);
-    y += 5;                                   // ← was 10
+    checkPage(30);
+    y += 10;
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(8.5);
+    doc.setFontSize(10);
     doc.setTextColor(30, 30, 30);
     doc.text(text.toUpperCase(), margin, y);
     doc.setDrawColor(30, 30, 30);
-    doc.setLineWidth(0.75);
-    doc.line(margin, y + 2.5, margin + contentW, y + 2.5);
-    y += 11;                                  // ← was 16
+    doc.setLineWidth(1);
+    doc.line(margin, y + 3, margin + contentW, y + 3);
+    y += 16;
   };
 
   // NAME
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(18);                        // ← was 24
+  doc.setFontSize(24);
   doc.setTextColor(10, 10, 10);
   doc.text(data.name || "Your Name", margin, y);
-  y += 18;                                    // ← was 26
+  y += 26;
 
   // CONTACT
   const contactParts = [data.email, data.phone, data.location, data.linkedin].filter(Boolean);
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(8.5);                       // ← was 10
+  doc.setFontSize(10);
   doc.setTextColor(80, 80, 80);
   const contactLine = doc.splitTextToSize(contactParts.join("  |  "), contentW);
-  contactLine.forEach(line => { doc.text(line, margin, y); y += LHS; });
-  y += 1;
+  contactLine.forEach(line => { doc.text(line, margin, y); y += 13; });
+  y += 2;
   doc.setDrawColor(200, 200, 200);
-  doc.setLineWidth(0.4);
+  doc.setLineWidth(0.5);
   doc.line(margin, y, margin + contentW, y);
-  y += 9;                                     // ← was 14
+  y += 14;
 
   // SUMMARY
   if (data.summary) {
     sectionTitle("Professional Summary");
     doc.setFont("helvetica", "normal");
-    doc.setFontSize(9.5);                     // ← was 11
+    doc.setFontSize(11);
     doc.setTextColor(50, 50, 50);
     const lines = doc.splitTextToSize(data.summary, contentW);
-    lines.forEach(line => { checkPage(LH); doc.text(line, margin, y); y += LH; });
-    y += 2;
+    lines.forEach(line => { checkPage(14); doc.text(line, margin, y); y += 14; });
+    y += 4;
   }
 
   // EXPERIENCE
   if (data.experience?.length > 0) {
     sectionTitle("Work Experience");
     data.experience.forEach(job => {
-      checkPage(34);
+      checkPage(44);
       doc.setFont("helvetica", "bold");
-      doc.setFontSize(10);                    // ← was 12
+      doc.setFontSize(12);
       doc.setTextColor(10, 10, 10);
       doc.text(job.title || "", margin, y);
       doc.setFont("helvetica", "normal");
-      doc.setFontSize(8.5);
+      doc.setFontSize(10);
       doc.setTextColor(100, 100, 100);
       const durW = doc.getTextWidth(job.duration || "");
       doc.text(job.duration || "", margin + contentW - durW, y);
-      y += 11;                                // ← was 15
+      y += 15;
       doc.setFont("helvetica", "italic");
-      doc.setFontSize(9);
+      doc.setFontSize(10);
       doc.setTextColor(60, 60, 60);
       doc.text(job.company || "", margin, y);
-      y += 10;                                // ← was 13
+      y += 13;
       doc.setFont("helvetica", "normal");
-      doc.setFontSize(9.5);                   // ← was 11
+      doc.setFontSize(11);
       doc.setTextColor(50, 50, 50);
       (job.bullets || []).forEach(bullet => {
-        const blines = doc.splitTextToSize(`• ${bullet}`, contentW - 10);
+        const blines = doc.splitTextToSize(`• ${bullet}`, contentW - 12);
         blines.forEach((line, i) => {
-          checkPage(LH);
-          doc.text(i === 0 ? line : `  ${line.trim()}`, margin + 6, y);
-          y += LH;
+          checkPage(13);
+          doc.text(i === 0 ? line : `  ${line.trim()}`, margin + 8, y);
+          y += 13;
         });
       });
-      y += 3;                                 // ← was 6
+      y += 6;
     });
   }
 
@@ -297,133 +295,139 @@ function generatePDF(data) {
   if (data.education?.length > 0) {
     sectionTitle("Education");
     data.education.forEach(edu => {
-      checkPage(22);
+      checkPage(30);
       doc.setFont("helvetica", "bold");
-      doc.setFontSize(10);
+      doc.setFontSize(12);
       doc.setTextColor(10, 10, 10);
       doc.text(edu.degree || "", margin, y);
       doc.setFont("helvetica", "normal");
-      doc.setFontSize(8.5);
+      doc.setFontSize(10);
       doc.setTextColor(100, 100, 100);
       const yearW = doc.getTextWidth(edu.year || "");
       doc.text(edu.year || "", margin + contentW - yearW, y);
-      y += 11;
+      y += 15;
       doc.setFont("helvetica", "normal");
-      doc.setFontSize(9.5);
+      doc.setFontSize(11);
       doc.setTextColor(60, 60, 60);
       doc.text(edu.institution || "", margin, y);
-      y += 13;                                // ← was 18
+      y += 18;
     });
   }
 
-  // SKILLS — 4 per row instead of 3
+  // SKILLS
   if (data.skills?.length > 0) {
     sectionTitle("Skills");
     doc.setFont("helvetica", "normal");
-    doc.setFontSize(9.5);
+    doc.setFontSize(11);
     doc.setTextColor(50, 50, 50);
-    const cols = 4;                           // ← was 3
+    // Print 3 skills per row
+    const cols = 3;
     const colW = contentW / cols;
     for (let i = 0; i < data.skills.length; i += cols) {
-      checkPage(LH);
+      checkPage(14);
       for (let j = 0; j < cols; j++) {
-        if (data.skills[i + j]) doc.text(`• ${data.skills[i + j]}`, margin + j * colW, y);
+        if (data.skills[i + j]) {
+          doc.text(`• ${data.skills[i + j]}`, margin + j * colW, y);
+        }
       }
-      y += LH;
+      y += 14;
     }
-    y += 2;
+    y += 4;
   }
 
-  // LANGUAGES — 4 per row
+  // LANGUAGES
   if (data.languages?.length > 0) {
     sectionTitle("Languages");
-    const cols = 4;                           // ← was 3
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(11);
+    doc.setTextColor(50, 50, 50);
+    const cols = 3;
     const colW = contentW / cols;
     for (let i = 0; i < data.languages.length; i += cols) {
-      checkPage(20);
+      checkPage(28);
       for (let j = 0; j < cols; j++) {
         const lang = data.languages[i + j];
         if (lang) {
           doc.setFont("helvetica", "bold");
-          doc.setFontSize(9.5);
+          doc.setFontSize(11);
           doc.setTextColor(30, 30, 30);
           doc.text(lang.language || "", margin + j * colW, y);
           doc.setFont("helvetica", "normal");
-          doc.setFontSize(8.5);
+          doc.setFontSize(10);
           doc.setTextColor(100, 100, 100);
-          doc.text(lang.level || "", margin + j * colW, y + LHS);
+          doc.text(lang.level || "", margin + j * colW, y + 13);
         }
       }
-      y += 20;                                // ← was 28
+      y += 28;
     }
-    y += 2;
+    y += 4;
   }
 
   // CERTIFICATIONS
   if (data.certifications?.length > 0) {
     sectionTitle("Certifications");
     doc.setFont("helvetica", "normal");
-    doc.setFontSize(9.5);
+    doc.setFontSize(11);
     doc.setTextColor(50, 50, 50);
     data.certifications.forEach(cert => {
-      checkPage(LH);
-      doc.text(`• ${cert}`, margin + 6, y);
-      y += LH;
+      checkPage(14);
+      doc.text(`• ${cert}`, margin + 8, y);
+      y += 14;
     });
-    y += 2;
+    y += 4;
   }
 
   // HOBBIES
   if (data.hobbies?.length > 0) {
     sectionTitle("Hobbies & Interests");
     doc.setFont("helvetica", "normal");
-    doc.setFontSize(9.5);
+    doc.setFontSize(11);
     doc.setTextColor(50, 50, 50);
-    const hlines = doc.splitTextToSize(data.hobbies.join("  •  "), contentW);
-    hlines.forEach(line => { checkPage(LH); doc.text(line, margin, y); y += LH; });
-    y += 2;
+    const hobbiesText = data.hobbies.join("  •  ");
+    const hlines = doc.splitTextToSize(hobbiesText, contentW);
+    hlines.forEach(line => { checkPage(14); doc.text(line, margin, y); y += 14; });
+    y += 4;
   }
 
   // REFERENCES
   if (data.references?.length > 0) {
     sectionTitle("References");
     doc.setFont("helvetica", "normal");
-    doc.setFontSize(9.5);
+    doc.setFontSize(11);
     doc.setTextColor(50, 50, 50);
+    // Check if "available upon request"
     if (data.references.length === 1 && data.references[0].name?.toLowerCase().includes("available")) {
-      checkPage(LH);
+      checkPage(14);
       doc.text("Available upon request", margin, y);
-      y += LH;
+      y += 14;
     } else {
       const cols = 2;
       const colW = contentW / cols;
       for (let i = 0; i < data.references.length; i += cols) {
-        checkPage(42);
+        checkPage(56);
         for (let j = 0; j < cols; j++) {
           const ref = data.references[i + j];
           if (ref) {
             const x = margin + j * colW;
             doc.setFont("helvetica", "bold");
-            doc.setFontSize(9.5);
+            doc.setFontSize(11);
             doc.setTextColor(20, 20, 20);
             doc.text(ref.name || "", x, y);
             doc.setFont("helvetica", "normal");
-            doc.setFontSize(8.5);
+            doc.setFontSize(10);
             doc.setTextColor(60, 60, 60);
-            if (ref.title)   doc.text(ref.title,   x, y + LH);
-            if (ref.company) doc.text(ref.company, x, y + LH * 2);
-            if (ref.contact) doc.text(ref.contact, x, y + LH * 3);
+            if (ref.title) { doc.text(ref.title, x, y + 13); }
+            if (ref.company) { doc.text(ref.company, x, y + 26); }
+            if (ref.contact) { doc.text(ref.contact, x, y + 39); }
           }
         }
-        y += 44;                              // ← was 56
+        y += 56;
       }
     }
   }
 
   doc.save("ats-optimized-cv.pdf");
 }
-
-
 
 // ─── Toast Container ─────────────────────────────────────────────────────────
 function ToastContainer({ toasts, onDismiss }) {
