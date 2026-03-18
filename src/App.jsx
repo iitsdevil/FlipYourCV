@@ -113,6 +113,9 @@ const STYLES = `
   .loading-state p { font-size: 0.8rem; color: var(--muted); font-family: 'DM Mono', monospace; animation: pulse 1.5s ease-in-out infinite; }
   @keyframes pulse { 0%,100%{opacity:0.5} 50%{opacity:1} }
   .footer { text-align: center; margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border); font-size: 0.7rem; color: var(--muted); font-family: 'DM Mono', monospace; }
+  /* AD SLOT */
+  .ad-slot { margin-top: 48px; margin-bottom: 8px; width: 100%; }
+  .ad-placeholder { width: 100%; min-height: 90px; border: 1.5px dashed var(--border); border-radius: 4px; display: flex; align-items: center; justify-content: center; background: var(--surface); color: var(--muted); font-family: 'DM Mono', monospace; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.5; }
   /* CONTACT SECTION */
   .contact { margin-top: 64px; padding-top: 48px; border-top: 1px solid var(--border); text-align: center; }
   .contact-label { font-family: 'DM Mono', monospace; font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
@@ -807,24 +810,24 @@ export default function App() {
           </div>
         </div>
 
-        {/* ── TESTIMONIALS ── */}
-        <div className="testimonials">
-          <div className="testimonials-label">// what people say</div>
-          <div className="testimonials-grid">
-            {[
-              { init: "SK", name: "Samir K.",   role: "Software Engineer",   text: '"My ATS score went from 42 to 91 in seconds. Got 3 interview calls the following week — genuinely shocked."' },
-              { init: "LM", name: "Laila M.",   role: "Marketing Manager",   text: '"Finally a tool that actually reformats your CV properly. The PDF output looks genuinely professional."' },
-              { init: "JT", name: "James T.",   role: "Product Designer",    text: '"Best free CV optimizer I\'ve found. Simple, fast, and the ATS tips actually helped me understand what to fix."' },
-            ].map(t => (
-              <div className="testimonial" key={t.name}>
-                <div className="testimonial-stars">★★★★★</div>
-                <p>{t.text}</p>
-                <div className="testimonial-author">
-                  <div className="testimonial-avatar">{t.init}</div>
-                  <div><div className="testimonial-name">{t.name}</div><div className="testimonial-role">{t.role}</div></div>
-                </div>
-              </div>
-            ))}
+        {/* ── AD SLOT ── paste your AdSense <ins> tag inside .ad-slot below ── */}
+        <div className="ad-slot">
+          {/* TODO: Replace this placeholder with your real AdSense <ins> tag.
+              Steps:
+              1. Sign up at https://adsense.google.com
+              2. Once approved, go to Ads → By ad unit → Display ads
+              3. Copy the generated <script> tag and add it to index.html <head>
+              4. Copy the <ins ...> tag and paste it here in place of the placeholder div
+              Example:
+              <ins className="adsbygoogle"
+                style={{ display: "block" }}
+                data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                data-ad-slot="XXXXXXXXXX"
+                data-ad-format="auto"
+                data-full-width-responsive="true" />
+          */}
+          <div className="ad-placeholder">
+            <span>Advertisement</span>
           </div>
         </div>
 
