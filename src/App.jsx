@@ -24,9 +24,14 @@ const STYLES = `
   .panel-header .num { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--accent); background: rgba(108,99,255,0.12); padding: 2px 8px; border-radius: 2px; }
   .panel-header h2 { font-size: 0.85rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
   .panel-body { padding: 20px; }
-  .upload-zone { border: 1.5px dashed var(--border); border-radius: 4px; padding: 48px 24px; text-align: center; cursor: pointer; transition: all 0.2s; position: relative; }
+  .upload-zone { border: 1.5px dashed var(--border); border-radius: 4px; padding: 48px 24px; text-align: center; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; }
   .upload-zone:hover, .upload-zone.dragging { border-color: var(--accent); background: rgba(108,99,255,0.04); }
   .upload-zone input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+  /* EXTRACTING OVERLAY */
+  .extract-overlay { position: absolute; inset: 0; background: rgba(17,17,24,0.88); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; z-index: 2; border-radius: 4px; backdrop-filter: blur(2px); }
+  .extract-overlay .big-spinner { width: 30px; height: 30px; border: 2.5px solid rgba(108,99,255,0.25); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.75s linear infinite; }
+  .extract-overlay p { font-size: 0.78rem; color: var(--accent); font-family: 'DM Mono', monospace; letter-spacing: 0.04em; }
+  .extract-overlay small { font-size: 0.66rem; color: var(--muted); font-family: 'DM Mono', monospace; animation: pulse 1.4s ease-in-out infinite; }
   .upload-icon { font-size: 2.5rem; margin-bottom: 12px; display: block; }
   .upload-zone h3 { font-size: 1rem; font-weight: 600; margin-bottom: 6px; }
   .upload-zone p { font-size: 0.8rem; color: var(--muted); font-family: 'DM Mono', monospace; }
@@ -534,6 +539,7 @@ export default function App() {
   const [loadingMsg, setLoadingMsg] = useState("");
   const [toasts, setToasts] = useState([]);
   const [dragging, setDragging] = useState(false);
+  const [extracting, setExtracting] = useState(false);
   const [displayScore, setDisplayScore] = useState(0);
   const [theme, setTheme] = useState("dark");
   const [copied, setCopied] = useState(false);
@@ -602,8 +608,10 @@ export default function App() {
       showToast(`File too large (${(f.size / 1024 / 1024).toFixed(1)} MB). Max allowed is ${MAX_FILE_SIZE_MB} MB.`);
       return;
     }
+    setExtracting(true);
     try { const text = await extractText(f); setFile(f); setRawText(text); }
     catch (e) { showToast(e.message); }
+    finally { setExtracting(false); }
   };
 
   const convert = async () => {
@@ -704,7 +712,7 @@ export default function App() {
             <div className="panel">
               <div className="panel-header"><span className="num">01</span><h2>Your CV</h2></div>
               <div className="panel-body">
-                {!file ? (
+                {!file && !extracting ? (
                   <div className={`upload-zone ${dragging ? "dragging" : ""}`}
                     onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
                     onDragLeave={() => setDragging(false)}
@@ -713,6 +721,17 @@ export default function App() {
                     <span className="upload-icon">📄</span>
                     <h3>Drop your CV here</h3>
                     <p>PDF, DOCX, or TXT supported</p>
+                  </div>
+                ) : extracting ? (
+                  <div className="upload-zone" style={{ pointerEvents: "none" }}>
+                    <div className="extract-overlay">
+                      <div className="big-spinner" />
+                      <p>Reading your CV...</p>
+                      <small>Extracting text from your file</small>
+                    </div>
+                    <span className="upload-icon" style={{ opacity: 0.15 }}>📄</span>
+                    <h3 style={{ opacity: 0.15 }}>Drop your CV here</h3>
+                    <p style={{ opacity: 0.15 }}>PDF, DOCX, or TXT supported</p>
                   </div>
                 ) : (
                   <div className="file-loaded">
