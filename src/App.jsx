@@ -567,6 +567,11 @@ export default function App() {
     return () => clearInterval(t);
   }, [result]);
 
+  // Push AdSense ad after component mounts (required in React SPAs)
+  useEffect(() => {
+    try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch (_) {}
+  }, []);
+
   const showToast = (message, type = "error") => {
     const id = Date.now() + Math.random();
     setToasts(prev => [...prev, { id, message, type, dismissing: false }]);
@@ -810,25 +815,14 @@ export default function App() {
           </div>
         </div>
 
-        {/* ── AD SLOT ── paste your AdSense <ins> tag inside .ad-slot below ── */}
+        {/* ── AD SLOT ── */}
         <div className="ad-slot">
-          {/* TODO: Replace this placeholder with your real AdSense <ins> tag.
-              Steps:
-              1. Sign up at https://adsense.google.com
-              2. Once approved, go to Ads → By ad unit → Display ads
-              3. Copy the generated <script> tag and add it to index.html <head>
-              4. Copy the <ins ...> tag and paste it here in place of the placeholder div
-              Example:
-              <ins className="adsbygoogle"
-                style={{ display: "block" }}
-                data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
-                data-ad-slot="XXXXXXXXXX"
-                data-ad-format="auto"
-                data-full-width-responsive="true" />
-          */}
-          <div className="ad-placeholder">
-            <span>Advertisement</span>
-          </div>
+          <ins className="adsbygoogle"
+            style={{ display: "block" }}
+            data-ad-client="ca-pub-2579012016746124"
+            data-ad-slot="auto"
+            data-ad-format="auto"
+            data-full-width-responsive="true" />
         </div>
 
         {/* ── CONTACT SECTION — edit the details below ── */}
