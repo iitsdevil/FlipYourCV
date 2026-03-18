@@ -108,6 +108,16 @@ const STYLES = `
   .loading-state p { font-size: 0.8rem; color: var(--muted); font-family: 'DM Mono', monospace; animation: pulse 1.5s ease-in-out infinite; }
   @keyframes pulse { 0%,100%{opacity:0.5} 50%{opacity:1} }
   .footer { text-align: center; margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border); font-size: 0.7rem; color: var(--muted); font-family: 'DM Mono', monospace; }
+  /* CONTACT SECTION */
+  .contact { margin-top: 64px; padding-top: 48px; border-top: 1px solid var(--border); text-align: center; }
+  .contact-label { font-family: 'DM Mono', monospace; font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+  .contact h2 { font-family: 'DM Serif Display', serif; font-size: clamp(1.6rem, 4vw, 2.4rem); letter-spacing: -0.5px; margin-bottom: 10px; }
+  .contact h2 span { color: var(--accent); }
+  .contact p { font-size: 0.85rem; color: var(--muted); font-family: 'DM Mono', monospace; max-width: 480px; margin: 0 auto 32px; line-height: 1.7; }
+  .contact-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; }
+  .contact-link { display: flex; align-items: center; gap: 8px; padding: 10px 20px; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; color: var(--text); font-family: 'DM Mono', monospace; font-size: 0.78rem; text-decoration: none; transition: all 0.2s; }
+  .contact-link:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+  .contact-link .icon { font-size: 1rem; }
   /* TOASTS */
   .toast-container { position: fixed; bottom: 24px; right: 24px; display: flex; flex-direction: column; gap: 8px; z-index: 9999; pointer-events: none; }
   .toast { display: flex; align-items: flex-start; gap: 10px; padding: 12px 16px; border-radius: 4px; font-size: 0.78rem; font-family: 'DM Mono', monospace; line-height: 1.5; max-width: 360px; pointer-events: auto; animation: toastIn 0.25s ease forwards; border: 1px solid; }
@@ -641,6 +651,25 @@ export default function App() {
             </div>
           </div>
         </div>
+        {/* ── CONTACT SECTION — edit the details below ── */}
+        <div className="contact">
+          <div className="contact-label">// get in touch</div>
+          <h2>Let's <span>Connect</span></h2>
+          <p>Have a question, suggestion, or just want to say hi? {/* TODO: update this text */}<br />Feel free to reach out — I'd love to hear from you.</p>
+          <div className="contact-links">
+            {/* TODO: replace href values with your real links */}
+            <a className="contact-link" href="mailto:your@email.com">
+              <span className="icon">✉</span> your@email.com
+            </a>
+            <a className="contact-link" href="https://twitter.com/yourhandle" target="_blank" rel="noopener noreferrer">
+              <span className="icon">𝕏</span> @yourhandle
+            </a>
+            <a className="contact-link" href="https://github.com/yourusername" target="_blank" rel="noopener noreferrer">
+              <span className="icon">⌥</span> github/yourusername
+            </a>
+          </div>
+        </div>
+        {/* ───────────────────────────────────────────── */}
         <div className="footer">FixyourCV — Powered by AI · Your CV is never stored · Free to use</div>
       </div>
     </>
