@@ -556,7 +556,7 @@ export default function App() {
       <div className="app">
         <div className="header">
           <div className="logo-area">
-            <h1>ATS<span>.</span>CV</h1>
+            <h1>Fix<span>your</span>CV</h1>
             <p>// الاداة الاولى لتحسين السيرة الذاتية</p>
             <span className="badge">ذكاء اصطناعي</span>
           </div>
@@ -641,7 +641,7 @@ export default function App() {
             </div>
           </div>
         </div>
-        <div className="footer">ATS.CV — Powered by AI · Your CV is never stored · Free to use</div>
+        <div className="footer">FixyourCV — Powered by AI · Your CV is never stored · Free to use</div>
       </div>
     </>
   );
