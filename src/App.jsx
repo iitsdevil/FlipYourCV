@@ -204,12 +204,12 @@ function generatePDF(data) {
   const doc = new jsPDF({ unit: "pt", format: "a4" });
   const pageW = doc.internal.pageSize.getWidth();
   const pageH = doc.internal.pageSize.getHeight();
-  const margin = 50;
+  const margin = 28;          // narrower margins → wider content
   const contentW = pageW - margin * 2;
-  let y = 50;
+  let y = 36;
 
   const checkPage = (needed = 20) => {
-    if (y + needed > pageH - 40) { doc.addPage(); y = 50; }
+    if (y + needed > pageH - 32) { doc.addPage(); y = 36; }
   };
 
   const sectionTitle = (text) => {
