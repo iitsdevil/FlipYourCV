@@ -6,9 +6,9 @@ const STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap');
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
-    --bg: #0a0a0f; --surface: #111118; --surface2: #1a1a28;
-    --border: #2a2a3d; --accent: #6C63FF; --accent2: #8B83FF;
-    --text: #f0f0f0; --muted: #666; --danger: #ff4545;
+    --bg: #f4f4fe; --surface: #ffffff; --surface2: #ebebfa;
+    --border: #d5d5ef; --accent: #6C63FF; --accent2: #8B83FF;
+    --text: #111118; --muted: #7070a0; --danger: #ff4545;
   }
   body { background: var(--bg); color: var(--text); font-family: 'Syne', sans-serif; min-height: 100vh; }
   .app { max-width: 1100px; margin: 0 auto; padding: 40px 24px 80px; }
@@ -139,12 +139,12 @@ const STYLES = `
   .toast-info { background: var(--surface2); border-color: var(--border); color: var(--muted); }
   .toast-close { background: none; border: none; color: inherit; opacity: 0.7; cursor: pointer; font-size: 1.1rem; padding: 0; line-height: 1; flex-shrink: 0; margin-top: 1px; }
   .toast-close:hover { opacity: 1; }
-  /* LIGHT THEME */
-  [data-theme="light"] {
-    --bg: #f4f4fe; --surface: #ffffff; --surface2: #ebebfa;
-    --border: #d5d5ef; --text: #111118; --muted: #7070a0;
+  /* DARK THEME */
+  [data-theme="dark"] {
+    --bg: #0a0a0f; --surface: #111118; --surface2: #1a1a28;
+    --border: #2a2a3d; --text: #f0f0f0; --muted: #666;
   }
-  [data-theme="light"] body { background: var(--bg); }
+  [data-theme="dark"] body { background: var(--bg); }
   /* THEME TOGGLE */
   .theme-btn { background: var(--surface2); border: 1px solid var(--border); color: var(--text); width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0; }
   .theme-btn:hover { border-color: var(--accent); transform: rotate(20deg); }
@@ -546,7 +546,7 @@ export default function App() {
   const [dragging, setDragging] = useState(false);
   const [extracting, setExtracting] = useState(false);
   const [displayScore, setDisplayScore] = useState(0);
-  const [theme, setTheme] = useState("dark");
+  const [theme, setTheme] = useState("light");
   const [copied, setCopied] = useState(false);
   const fileInputRef = useRef();
 
