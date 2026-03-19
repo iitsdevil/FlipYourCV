@@ -676,194 +676,250 @@ export default function App() {
   return (
     <>
       <style>{STYLES}</style>
+      <style>{`
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.3); }
+      `}</style>
       <ToastContainer toasts={toasts} onDismiss={dismissToast} />
-      <div className="app">
-        <div className="header">
-          <div className="logo-area">
-            <h1>Fix<span>your</span>CV</h1>
-            <p className="ar" style={{ marginTop: 10, fontSize: "0.95rem" }}>الأداة الأولى لتحسين السيرة الذاتية</p>
-            <span className="badge">مدعوم بالذكاء الاصطناعي</span>
-          </div>
-          <button className="theme-btn" onClick={() => setTheme(t => t === "dark" ? "light" : "dark")} aria-label="Toggle theme">
-            {theme === "dark" ? "☀️" : "🌙"}
-          </button>
-        </div>
-
-        {/* ── HERO ── */}
-        <div className="hero ar-center">
-          <div className="hero-tagline" style={{ justifyContent: "center" }}><span style={{ direction: "ltr" }}>AI-Powered Resume Optimizer</span></div>
-          <h2>احصل على مقابلات عمل أكثر،<br /><span>ابتداءً من اليوم</span></h2>
-          <p className="hero-sub" style={{ margin: "0 auto 30px" }}>قم برفع سيرتك الذاتية واحصل على نسخة PDF محسنة ومصممة باحترافية لتتخطى أنظمة (ATS) في ثوانٍ — مجاناً بالكامل.</p>
-          <div className="hero-stats" style={{ justifyContent: "center" }}>
-            <div className="hero-stat"><span className="num" style={{ direction: "ltr" }}>10K+</span><span className="label ar">سيرة ذاتية حسنت</span></div>
-            <div className="hero-stat"><span className="num" style={{ direction: "ltr" }}>91%</span><span className="label ar">متوسط التقييم</span></div>
-            <div className="hero-stat"><span className="num">مجاناً</span><span className="label ar">دائماً</span></div>
-          </div>
-        </div>
-
-        {/* ── HOW IT WORKS ── */}
-        <div className="how-strip ar">
-          {[
-            ["1", "ارفع سيرتك الذاتية", "ارفع ملف PDF، DOCX، أو TXT — أو الصق النص مباشرةً."],
-            ["2", "تحليل وتحسين بالذكاء الاصطناعي", "يقوم نموذج LLaMA 3 بإعادة صياغة سيرتك لتطابق كلمات ATS."],
-            ["3", "تحميل بصيغة PDF", "احصل على سيرة ذاتية نظيفة وجاهزة مع تقييمك ونصائح للتحسين."]
-          ].map(([n,t,d]) => (
-            <div className="how-step" key={n}>
-              <div className="how-num">{n}</div>
-              <div className="how-text"><h4>{t}</h4><p>{d}</p></div>
+      
+      {/* Tailwind Layout Wrapper */}
+      <div className="dark min-h-screen bg-background text-on-surface selection:bg-primary/30 selection:text-primary font-body" dir="rtl">
+        
+        {/* TopNavBar */}
+        <header className="fixed top-0 w-full z-50 bg-[#131318]/80 backdrop-blur-xl transition-all border-b border-white/5">
+          <nav className="flex justify-between items-center px-4 md:px-8 h-20 max-w-7xl mx-auto">
+            <div className="text-2xl font-black text-[#C4C0FF] tracking-tighter font-headline" style={{ direction: "ltr" }}>FixYourCV</div>
+            <div className="hidden md:flex items-center gap-8">
+              <span className="text-sm text-primary/80 border border-primary/20 px-3 py-1 rounded-full font-label">الأداة الأولى لتحسين السيرة الذاتية</span>
             </div>
-          ))}
-        </div>
+            <div className="flex items-center gap-4">
+              <button className="w-10 h-10 rounded-full bg-surface-container border border-outline-variant/30 flex items-center justify-center text-primary hover:bg-surface-container-high transition-colors" onClick={() => setTheme(t => t === "dark" ? "light" : "dark")} aria-label="Toggle theme">
+                {theme === "dark" ? "☀️" : "🌙"}
+              </button>
+            </div>
+          </nav>
+        </header>
 
-        {/* ── TRUST BADGES ── */}
-        <div className="trust-badges ar" style={{ justifyContent: "center" }}>
-          {[
-            ["✓", "مجاني الاستخدام"],
-            ["✓", "لا حاجة لإنشاء حساب"],
-            ["✓", "لا نحتفظ بسيرتك الذاتية"],
-            ["✓", "تصدير PDF فوري"],
-            ["✓", "مدعوم بالذكاء الاصطناعي"],
-            ["✓", "متوافق مع أنظمة التوظيف (ATS)"]
-          ].map(([c,t]) => (
-            <div className="trust-badge" key={t}><span className="check">{c}</span>{t}</div>
-          ))}
-        </div>
+        <main className="pt-32">
+          {/* Hero Section */}
+          <section className="max-w-7xl mx-auto px-4 md:px-8 mb-24 md:mb-32">
+            <div className="flex flex-col items-center text-center space-y-8 max-w-4xl mx-auto">
+              <span className="label-text text-xs uppercase text-primary border border-primary/20 px-4 py-1.5 rounded-full bg-primary/5">مدعوم بالذكاء الاصطناعي</span>
+              <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-[1.1] text-on-surface">
+                 احصل على مقابلات عمل أكثر، <br className="hidden md:block"/><span className="hero-gradient inline-block mt-2 md:mt-0">ابتداءً من اليوم</span>
+              </h1>
+              <p className="text-on-surface-variant text-lg md:text-2xl max-w-2xl leading-relaxed">
+                قم برفع سيرتك الذاتية واحصل على نسخة PDF محسنة ومصممة باحترافية لتتخطى أنظمة (ATS) في ثوانٍ — مجاناً بالكامل.
+              </p>
+              
+              <div className="flex flex-wrap justify-center gap-6 mt-8">
+                <div className="flex flex-col items-center"><span className="text-3xl font-black text-primary font-headline" style={{ direction: "ltr" }}>10K+</span><span className="text-sm text-on-surface-variant mt-1">سيرة ذاتية حسنت</span></div>
+                <div className="w-px bg-white/10 hidden sm:block"></div>
+                <div className="flex flex-col items-center"><span className="text-3xl font-black text-primary font-headline" style={{ direction: "ltr" }}>91%</span><span className="text-sm text-on-surface-variant mt-1">متوسط التقييم</span></div>
+                <div className="w-px bg-white/10 hidden sm:block"></div>
+                <div className="flex flex-col items-center"><span className="text-3xl font-black text-primary font-headline">مجاناً</span><span className="text-sm text-on-surface-variant mt-1">دائماً</span></div>
+              </div>
 
-        <div className="main-grid">
-          <div>
-            <div className="panel ar">
-              <div className="panel-header" style={{ flexDirection: "row-reverse" }}><span className="num">01</span><h2>سيرتك الذاتية</h2></div>
-              <div className="panel-body">
+              {/* Trust Badges */}
+              <div className="flex flex-wrap justify-center gap-2 md:gap-3 mt-8">
+                {[
+                  ["✓", "مجاني الاستخدام"], ["✓", "لا حاجة لإنشاء حساب"], ["✓", "لا نحتفظ بسيرتك الذاتية"], 
+                  ["✓", "تصدير PDF فوري"], ["✓", "مدعوم بالذكاء الاصطناعي"], ["✓", "متوافق مع أنظمة التوظيف (ATS)"]
+                ].map(([c,t]) => (
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 bg-surface-container/50 border border-outline-variant/30 rounded-full text-xs text-on-surface-variant" key={t}>
+                    <span className="text-primary font-bold">{c}</span>{t}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* Tool Area: Bento Grid Layout */}
+          <section className="max-w-7xl mx-auto px-4 md:px-8 mb-32" id="tool">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+              
+              {/* Drop Zone Panel */}
+              <div className="lg:col-span-7 glass-card rounded-2xl p-6 md:p-10 relative overflow-hidden group border border-white/5 shadow-2xl">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent pointer-events-none"></div>
+                
+                <h2 className="text-2xl font-bold mb-8 flex items-center gap-3 text-on-surface relative z-10"><span className="bg-primary/20 text-primary px-2 rounded font-mono text-sm" style={{ direction: "ltr" }}>01</span>سيرتك الذاتية</h2>
+                
                 {!file && !extracting ? (
-                  <div className={`upload-zone ${dragging ? "dragging" : ""}`}
+                  <div className={`relative z-10 h-64 flex flex-col justify-center items-center border-2 border-dashed ${dragging ? 'border-primary bg-primary/10 scale-[1.02]' : 'border-outline-variant/30 bg-surface-container-lowest/50'} rounded-xl cursor-pointer hover:border-primary/40 transition-all mb-8`}
                     onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
                     onDragLeave={() => setDragging(false)}
                     onDrop={(e) => { e.preventDefault(); setDragging(false); handleFile(e.dataTransfer.files[0]); }}>
-                    <input ref={fileInputRef} type="file" accept=".pdf,.docx,.txt" onChange={(e) => handleFile(e.target.files[0])} />
-                    <span className="upload-icon">📄</span>
-                    <h3>ضع سيرتك الذاتية هنا</h3>
-                    <p>ندعم ملفات PDF، DOCX، أو TXT</p>
+                    <input ref={fileInputRef} type="file" accept=".pdf,.docx,.txt" className="absolute inset-0 opacity-0 cursor-pointer w-full h-full" onChange={(e) => handleFile(e.target.files[0])} />
+                    <span className="material-symbols-outlined text-5xl text-primary mb-4 block" style={{fontVariationSettings: "'FILL' 0"}}>cloud_upload</span>
+                    <h3 className="text-xl font-bold mb-2">ضع سيرتك الذاتية هنا</h3>
+                    <p className="text-on-surface-variant text-sm font-mono">ندعم ملفات PDF، DOCX، أو TXT</p>
                   </div>
                 ) : extracting ? (
-                  <div className="upload-zone" style={{ pointerEvents: "none" }}>
-                    <div className="extract-overlay">
-                      <div className="big-spinner" />
-                      <p>جاري قراءة سيرتك الذاتية...</p>
-                      <small>استخراج النص من الملف الخاص بك</small>
-                    </div>
-                    <span className="upload-icon" style={{ opacity: 0.15 }}>📄</span>
-                    <h3 style={{ opacity: 0.15 }}>ضع سيرتك الذاتية هنا</h3>
-                    <p style={{ opacity: 0.15 }}>ندعم ملفات PDF، DOCX، أو TXT</p>
+                  <div className="relative z-10 h-64 flex flex-col justify-center items-center border-2 border-dashed border-primary/50 bg-primary/5 rounded-xl mb-8">
+                    <div className="w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full animate-spin mb-6"></div>
+                    <h3 className="text-lg font-bold text-primary mb-2">جاري قراءة سيرتك الذاتية...</h3>
+                    <p className="text-on-surface-variant animate-pulse font-mono text-sm">استخراج النص من الملف الخاص بك</p>
                   </div>
                 ) : (
-                  <div className="file-loaded" style={{ flexDirection: "row-reverse", textAlign: "right" }}>
-                    <span>✅</span>
-                    <div className="file-info" style={{ marginLeft: "auto", marginRight: 0 }}>
-                      <div className="file-name" style={{ direction: "ltr", textAlign: "right" }}>{file.name}</div>
-                      <div className="file-meta">{(file.size / 1024).toFixed(1)} KB · تم استخراج {rawText.split(/\s+/).length} كلمة</div>
+                  <div className="relative z-10 p-5 flex flex-col sm:flex-row items-center justify-between border border-primary/30 bg-primary-container/10 rounded-xl mb-8 gap-4 shadow-inner">
+                    <div className="flex items-center gap-4 w-full">
+                      <div className="w-12 h-12 bg-surface-container rounded-lg flex items-center justify-center text-primary text-xl shadow-sm">📄</div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-base font-bold text-on-surface truncate" style={{ direction: "ltr", textAlign: "right" }}>{file.name}</div>
+                        <div className="text-sm text-on-surface-variant font-mono mt-1">{(file.size / 1024).toFixed(1)} KB · تعرّف على {rawText.split(/\s+/).length} كلمة</div>
+                      </div>
                     </div>
-                    <button className="btn-remove" onClick={reset}>حذف</button>
+                    <button className="bg-surface-container hover:bg-surface-container-high border border-outline-variant/30 px-4 py-2 rounded-lg text-sm font-bold text-on-surface transition-colors shrink-0" onClick={reset}>حذف الملف</button>
                   </div>
                 )}
-                <textarea className="cv-textarea ar" placeholder="أو الصق نص سيرتك الذاتية مباشرة هنا..." value={rawText} onChange={(e) => setRawText(e.target.value)} rows={8} />
-                <span className="field-label ar">المسمى الوظيفي المستهدف (اختياري)</span>
-                <input className="job-input ar" placeholder="مثال: مهندس برمجيات أول..." value={jobTitle} onChange={(e) => setJobTitle(e.target.value)} />
+                
+                <div className="space-y-6 relative z-10">
+                  <textarea className="w-full h-40 bg-surface-container-lowest/80 border border-outline-variant/30 focus:border-primary rounded-xl p-4 text-on-surface placeholder:text-outline-variant outline-none transition-colors resize-y font-mono text-sm leading-relaxed" placeholder="أو الصق نص سيرتك الذاتية مباشرة هنا..." value={rawText} onChange={(e) => setRawText(e.target.value)}></textarea>
+                  
+                  <div>
+                    <label className="block text-xs font-bold text-primary tracking-widest uppercase mb-2">المسمى الوظيفي المستهدف (اختياري)</label>
+                    <input type="text" className="w-full bg-surface-container-lowest/80 border border-outline-variant/30 focus:border-primary rounded-xl p-4 text-on-surface outline-none transition-colors font-mono text-sm" placeholder="مثال: مهندس برمجيات أول..." value={jobTitle} onChange={(e) => setJobTitle(e.target.value)} />
+                  </div>
 
-                <button className="btn-convert" style={{ flexDirection: "row-reverse" }} onClick={convert} disabled={loading || !rawText.trim()}>
-                  {loading ? <><div className="spinner" /> جاري التحويل...</> : <>← تحويل وإنشاء PDF</>}
-                </button>
+                  <button className="w-full cta-gradient px-8 py-4 rounded-xl text-lg font-bold text-white shadow-xl shadow-primary/20 hover:scale-[1.01] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 group" onClick={convert} disabled={loading || !rawText.trim()}>
+                    {loading ? <><div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div> جاري التحويل...</> : <>← <span className="group-hover:translate-x-[-4px] transition-transform">تحويل وإنشاء PDF</span></>}
+                  </button>
+                </div>
+                
+                <div className="ai-pulse-line absolute left-0 top-1/4 bottom-1/4 rounded-full opacity-50"></div>
               </div>
-            </div>
-            <div className="tips-grid ar" style={{ marginTop: 16 }}>
-              {[
-                ["بدون جداول/أعمدة", "أنظمة ATS لا يمكنها قراءة التخطيطات متعددة الأعمدة"],
-                ["خطوط بسيطة", "Arial, Calibri, Times New Roman"],
-                ["عناوين قياسية", "استخدم العناوين التي تتوقعها أنظمة ATS"],
-                ["الكلمات المفتاحية", "طابق الكلمات الموجودة في الوصف الوظيفي"]
-              ].map(([t,d]) => (
-                <div className="tip" key={t}><strong>{t}</strong>{d}</div>
-              ))}
-            </div>
-          </div>
 
-          <div className="panel ar">
-            <div className="panel-header" style={{ flexDirection: "row-reverse" }}><span className="num">02</span><h2>السيرة الذاتية المحسنة</h2></div>
-            <div className="panel-body">
-              {loading ? (
-                <div className="loading-state"><div className="big-spinner" /><p style={{ direction: "ltr" }}>{loadingMsg}</p></div>
-              ) : result ? (
-                <>
-                  {result.score != null && (
-                    <div className="score-card" style={{ flexDirection: "row-reverse" }}>
-                      <div className="score-num" style={{ direction: "ltr" }}>{displayScore}</div>
-                      <div className="score-details" style={{ textAlign: "right" }}>
-                        <h4>درجة توافق أنظمة (ATS)</h4>
-                        <p>من 100 — {result.score >= 80 ? "ممتاز!" : result.score >= 60 ? "جيد، يحتاج تعديلات بسيطة" : "يحتاج إلى تحسين"}</p>
-                        <div className="score-bar" style={{ transform: "rotate(180deg)" }}><div className="score-bar-fill" style={{ width: `${result.score}%` }} /></div>
+              {/* Preview Area Panel */}
+              <div className="lg:col-span-5 flex flex-col gap-6">
+                <div className="bg-surface-container-low/80 backdrop-blur-md rounded-2xl p-6 md:p-8 flex flex-col flex-1 border border-outline-variant/10 shadow-2xl relative min-h-[500px]">
+                  
+                  <div className="flex justify-between items-center mb-6 border-b border-outline-variant/10 pb-4">
+                    <span className="label-text text-sm font-bold text-primary flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span> المعاينة والنتائج</span>
+                    <span className="bg-surface-container px-3 py-1 rounded text-xs text-on-surface-variant font-mono" style={{ direction: "ltr" }}>02</span>
+                  </div>
+
+                  {loading ? (
+                    <div className="flex flex-col items-center justify-center flex-1 space-y-4 text-center">
+                      <div className="relative w-16 h-16">
+                         <div className="absolute inset-0 border-4 border-surface-container rounded-full"></div>
+                         <div className="absolute inset-0 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+                      </div>
+                      <p className="text-on-surface-variant font-mono text-sm mt-4" style={{ direction: "ltr" }}>{loadingMsg}</p>
+                    </div>
+                  ) : result ? (
+                    <div className="flex flex-col h-full animate-[fadeSlideUp_0.4s_ease]">
+                       {/* Score Header */}
+                       {result.score != null && (
+                         <div className="bg-primary-container/10 rounded-xl p-5 border border-primary/20 flex flex-col items-start justify-between mb-6 shadow-inner">
+                           <div className="flex justify-between w-full items-center mb-4 cursor-default">
+                             <div>
+                               <p className="label-text text-[10px] sm:text-xs text-primary mb-1 uppercase tracking-widest">تحديث الحالة</p>
+                               <p className="font-bold text-sm sm:text-base text-on-surface">معدل اجتياز الـ ATS</p>
+                             </div>
+                             <div className="relative">
+                               <svg className="w-16 h-16 transform -rotate-90">
+                                 <circle cx="32" cy="32" r="28" stroke="currentColor" strokeWidth="6" fill="transparent" className="text-surface-container-high" />
+                                 <circle cx="32" cy="32" r="28" stroke="currentColor" strokeWidth="6" fill="transparent" style={{ strokeDasharray: 175, strokeDashoffset: 175 - (175 * result.score) / 100, transition: "stroke-dashoffset 1s ease-out" }} className="text-primary" />
+                               </svg>
+                               <div className="absolute inset-0 flex items-center justify-center font-headline font-black text-lg text-primary" style={{ direction: "ltr" }}>{displayScore}</div>
+                             </div>
+                           </div>
+                           <p className="text-xs text-on-surface-variant leading-relaxed">من 100 — {result.score >= 80 ? "ممتاز! السيرة جاهزة وتواكب أفضل المعايير." : result.score >= 60 ? "جيد، لكن القليل من التحسينات ستزيد فرصك." : "يحتاج إلى تحسين جذري للحصول على مقابلات."}</p>
+                         </div>
+                       )}
+
+                       {/* The PDF Preview */}
+                       <div className="flex-1 bg-white rounded-xl p-3 sm:p-5 overflow-hidden relative shadow-inner border border-outline-variant/5 mb-6 opacity-95 hover:opacity-100 transition-opacity min-h-[400px]">
+                         <div className="absolute inset-0 overflow-y-auto custom-scrollbar" style={{ direction: "ltr", textAlign: "left" }}>
+                           <CVPreview data={result} />
+                         </div>
+                       </div>
+                       
+                       {/* Output Actions */}
+                       <div className="flex flex-wrap gap-3 mt-auto pt-2">
+                         <button className="flex-1 cta-gradient text-white py-3.5 px-4 rounded-xl font-bold text-sm hover:scale-[1.02] transition-transform flex items-center justify-center gap-2 shadow-lg shadow-primary/20" onClick={() => generatePDF(result)}>
+                           <span className="material-symbols-outlined text-lg">download</span> تحميل PDF
+                         </button>
+                         <button className="bg-surface-container hover:bg-surface-container-high border border-outline-variant/30 text-white py-3.5 px-4 rounded-xl font-bold text-sm transition-colors flex items-center justify-center gap-2" onClick={copyAsText}>
+                           {copied ? <span className="material-symbols-outlined text-lg text-green-400">check</span> : <span className="material-symbols-outlined text-lg">content_copy</span>} {copied ? "تم النسخ!" : "نسخ النص"}
+                         </button>
+                       </div>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center flex-1 text-center opacity-30 select-none">
+                      <div className="space-y-4 w-full px-8">
+                        <div className="h-4 bg-surface-container-highest rounded-full w-3/4 mx-auto"></div>
+                        <div className="h-4 bg-surface-container-highest rounded-full w-full mx-auto"></div>
+                        <div className="h-4 bg-surface-container-highest rounded-full w-5/6 mx-auto"></div>
+                        <div className="pt-8 space-y-4">
+                          <div className="h-24 bg-surface-container-highest/60 rounded-xl w-full"></div>
+                          <div className="h-24 bg-surface-container-highest/60 rounded-xl w-full"></div>
+                        </div>
                       </div>
                     </div>
                   )}
-                  <div style={{ direction: "ltr", textAlign: "left" }}><CVPreview data={result} /></div>
-                  {result.tips?.length > 0 && (
-                    <div className="tips-list">
-                      {result.tips.map((tip, i) => <div className="tip-item" style={{ flexDirection: "row-reverse" }} key={i}>{tip}</div>)}
-                    </div>
-                  )}
-                  <div className="output-actions" style={{ flexDirection: "row-reverse" }}>
-                    <button className="btn-action highlight" onClick={() => generatePDF(result)}>⬇ تحميل PDF</button>
-                    <button className="btn-action" onClick={copyAsText}>{copied ? "✓ تم النسخ!" : "⎘ نسخ النص"}</button>
-                    <button className="btn-action primary" onClick={reset}>سيرة ذاتية جديدة</button>
-                  </div>
-                </>
-              ) : (
-                <div className="output-empty">
-                  <svg width="56" height="70" viewBox="0 0 56 70" fill="none" style={{color:"var(--border)",marginBottom:4}}>
-                    <rect x="1" y="1" width="54" height="68" rx="3" stroke="currentColor" strokeWidth="1.5" strokeDasharray="4 3"/>
-                    <rect x="10" y="18" width="36" height="2" rx="1" fill="currentColor" opacity="0.5"/>
-                    <rect x="10" y="26" width="28" height="2" rx="1" fill="currentColor" opacity="0.3"/>
-                    <rect x="10" y="34" width="32" height="2" rx="1" fill="currentColor" opacity="0.3"/>
-                    <rect x="10" y="42" width="24" height="2" rx="1" fill="currentColor" opacity="0.2"/>
-                    <rect x="10" y="50" width="30" height="2" rx="1" fill="currentColor" opacity="0.2"/>
-                    <rect x="10" y="11" width="18" height="4" rx="2" fill="currentColor" opacity="0.45"/>
-                  </svg>
-                  <p>ارفع سيرتك الذاتية واضغط على تحويل</p>
-                  <p style={{ opacity: 0.5 }}>سيتم إنشاء ملف PDF متوافق ونظيف</p>
                 </div>
-              )}
+              </div>
+
+            </div>
+          </section>
+
+          {/* Ad Slot Section */}
+          <section className="max-w-7xl mx-auto px-4 md:px-8 mb-32">
+             <div className="w-full bg-surface-container-lowest/30 border border-outline-variant/10 rounded-2xl p-4 flex items-center justify-center min-h-[140px] shadow-sm">
+                <ins className="adsbygoogle"
+                  style={{ display: "block", textAlign: "center" }}
+                  data-ad-client="ca-pub-2579012016746124"
+                  data-ad-slot="auto"
+                  data-ad-format="auto"
+                  data-full-width-responsive="true" />
+             </div>
+          </section>
+
+          {/* 3-Step Guide */}
+          <section className="max-w-7xl mx-auto px-4 md:px-8 mb-40">
+            <div className="text-center mb-16 md:mb-24">
+              <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-6 text-on-surface">الدقة في ثلاث خطوات</h2>
+              <div className="h-1.5 w-24 bg-primary/80 mx-auto rounded-full"></div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16">
+              <div className="space-y-6">
+                <div className="text-7xl font-black text-outline-variant/20 font-headline italic" style={{ direction: "ltr", textAlign: "right" }}>01</div>
+                <h3 className="text-2xl font-bold text-on-surface border-b border-primary/20 pb-2 inline-block">رفع السيرة الذاتية</h3>
+                <p className="text-on-surface-variant leading-relaxed text-lg">قم برفع سيرتك الذاتية بأمان. نحن ندعم جميع الصيغ الرئيسية بما في ذلك PDF، و DOCX، والنص المباشر.</p>
+              </div>
+              <div className="space-y-6 relative">
+                <div className="text-7xl font-black text-outline-variant/20 font-headline italic" style={{ direction: "ltr", textAlign: "right" }}>02</div>
+                <h3 className="text-2xl font-bold text-on-surface border-b border-primary/20 pb-2 inline-block">تحليل الذكاء الاصطناعي</h3>
+                <p className="text-on-surface-variant leading-relaxed text-lg">يقوم الذكاء الاصطناعي الخاص بنا بتحديد الفجوات وإصلاح الكلمات المفتاحية ومشاكل التنسيق التي تعيق وصولك.</p>
+                <div className="hidden md:block absolute -left-8 lg:-left-12 top-1/2 -translate-y-1/2 text-outline-variant/20 rotate-180">
+                  <span className="material-symbols-outlined text-4xl">trending_flat</span>
+                </div>
+              </div>
+              <div className="space-y-6">
+                <div className="text-7xl font-black text-outline-variant/20 font-headline italic" style={{ direction: "ltr", textAlign: "right" }}>03</div>
+                <h3 className="text-2xl font-bold text-on-surface border-b border-primary/20 pb-2 inline-block">تحميل ملف PDF</h3>
+                <p className="text-on-surface-variant leading-relaxed text-lg">احصل على ملف PDF بتصميم نظيف ومتوافق تماماً مع أنظمة الفرز (ATS)، جاهز للتقديم الفوري.</p>
+              </div>
+            </div>
+          </section>
+        </main>
+
+        <footer className="bg-[#0e0e13] border-t border-outline-variant/10">
+          <div className="flex flex-col md:flex-row justify-between items-center px-4 md:px-8 py-10 max-w-7xl mx-auto gap-8">
+            <div className="text-xl font-black text-primary font-headline tracking-tighter" style={{ direction: "ltr" }}>FixYourCV</div>
+            <div className="flex flex-wrap justify-center gap-6 md:gap-8">
+              <a className="text-on-surface-variant hover:text-primary transition-colors font-body text-sm" href="mailto:your@email.com">تواصل معنا</a>
+              <a className="text-on-surface-variant hover:text-primary transition-colors font-body text-sm" href="https://twitter.com/yourhandle">تويتر 𝕏</a>
+              <a className="text-on-surface-variant hover:text-primary transition-colors font-body text-sm" href="https://github.com/yourusername">جيت هب</a>
+            </div>
+            <div className="text-primary/40 font-mono text-xs" style={{ direction: "ltr" }}>
+              © 2024 FixYourCV. AI-Powered Excellence.
             </div>
           </div>
-        </div>
-
-        {/* ── AD SLOT ── */}
-        <div className="ad-slot">
-          <ins className="adsbygoogle"
-            style={{ display: "block" }}
-            data-ad-client="ca-pub-2579012016746124"
-            data-ad-slot="auto"
-            data-ad-format="auto"
-            data-full-width-responsive="true" />
-        </div>
-
-        {/* ── CONTACT SECTION — edit the details below ── */}
-        <div className="contact ar-center">
-          <div className="contact-label" style={{ direction: "ltr" }}>// get in touch</div>
-          <h2>دعنا <span>نتواصل</span></h2>
-          <p>هل لديك سؤال، اقتراح، أو تريد فقط إلقاء التحية؟<br />لا تتردد في التواصل معي — يسعدني سماع رأيك.</p>
-          <div className="contact-links" style={{ flexDirection: "row-reverse" }}>
-            {/* TODO: replace href values with your real links */}
-            <a className="contact-link" href="mailto:your@email.com" style={{ direction: "ltr" }}>
-              <span className="icon">✉</span> your@email.com
-            </a>
-            <a className="contact-link" href="https://twitter.com/yourhandle" target="_blank" rel="noopener noreferrer" style={{ direction: "ltr" }}>
-              <span className="icon">𝕏</span> @yourhandle
-            </a>
-            <a className="contact-link" href="https://github.com/yourusername" target="_blank" rel="noopener noreferrer" style={{ direction: "ltr" }}>
-              <span className="icon">⌥</span> github/yourusername
-            </a>
-          </div>
-        </div>
-        {/* ───────────────────────────────────────────── */}
-        <div className="footer ar-center" style={{ direction: "ltr" }}>FixyourCV — مدعوم بالذكاء الاصطناعي · لا يتم تخزين سيرتك الذاتية أبدًا · مجاني الاستخدام</div>
+        </footer>
       </div>
     </>
   );
