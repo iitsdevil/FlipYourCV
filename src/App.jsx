@@ -655,8 +655,7 @@ export default function App() {
     // Clear any previous widget
     turnstileRef.current.innerHTML = "";
     window.turnstile.render(turnstileRef.current, {
-      // ⚠️ REPLACE with your real site key from: https://dash.cloudflare.com → Turnstile
-      sitekey: "1x00000000000000000000AA",  // This is a test key that always passes
+      sitekey: "0x4AAAAAACtiYlNeMBElx1HD",
       callback: (token) => setTurnstileToken(token),
       "expired-callback": () => setTurnstileToken(""),
       theme: theme === "dark" ? "dark" : "light",
@@ -740,7 +739,7 @@ export default function App() {
       if (window.turnstile && turnstileRef.current) {
         turnstileRef.current.innerHTML = "";
         window.turnstile.render(turnstileRef.current, {
-          sitekey: "1x00000000000000000000AA",
+          sitekey: "0x4AAAAAACtiYlNeMBElx1HD",
           callback: (token) => setTurnstileToken(token),
           "expired-callback": () => setTurnstileToken(""),
           theme: theme === "dark" ? "dark" : "light",
@@ -834,7 +833,7 @@ export default function App() {
         <div className="main-grid" style={{ direction: lang === 'ar' ? 'rtl' : 'ltr' }}>
           <div>
             <div className={`panel ${lang === 'ar' ? 'ar' : ''}`}>
-              <div className="panel-header" style={lang === 'ar' ? { direction: 'ltr', justifyContent: 'flex-end', fontFamily: 'Cairo' } : {}}><span className="num" style={lang === 'ar' ? {marginRight: '12px'} : {}}>01</span><h2>{t("step1title")}</h2></div>
+              <div className="panel-header" style={lang === 'ar' ? { direction: 'ltr', justifyContent: 'flex-end', fontFamily: 'Cairo' } : {}}><span className="num" style={lang === 'ar' ? { marginRight: '12px' } : {}}>01</span><h2>{t("step1title")}</h2></div>
               <div className="panel-body">
                 {!file && !extracting ? (
                   <div className={`upload-zone ${dragging ? "dragging" : ""}`}
@@ -900,7 +899,7 @@ export default function App() {
           </div>
 
           <div className={`panel ${lang === 'ar' ? 'ar' : ''}`}>
-            <div className="panel-header" style={lang === 'ar' ? { direction: 'ltr', justifyContent: 'flex-end', fontFamily: 'Cairo' } : {}}><span className="num" style={lang === 'ar' ? {marginRight: '12px'} : {}}>02</span><h2>{t("step2title")}</h2></div>
+            <div className="panel-header" style={lang === 'ar' ? { direction: 'ltr', justifyContent: 'flex-end', fontFamily: 'Cairo' } : {}}><span className="num" style={lang === 'ar' ? { marginRight: '12px' } : {}}>02</span><h2>{t("step2title")}</h2></div>
             <div className="panel-body">
               {loading ? (
                 <div className="loading-state"><div className="big-spinner" /><p style={{ direction: "ltr" }}>{loadingMsg}</p></div>
