@@ -535,8 +535,55 @@ function CVPreview({ data }) {
   );
 }
 
+// ─── TRANSLATIONS ─────────────────────────────────────────────────────────────
+const DICT = {
+  en: {
+    navSubtitle: "The #1 AI Resume Optimizer", heroBadge: "AI-Powered Career Catalyst",
+    heroTitle1: "Land more interviews, ", heroTitle2: "starting today",
+    heroSub: "Transform your messy experience into a high-performance ATS-optimized CV in seconds. Let the Luminescent Curator handle the precision.",
+    stat1: "10K+", stat1Lbl: "Resumes Optimized", stat2: "91%", stat2Lbl: "Average ATS Score", stat3: "Free", stat3Lbl: "Forever",
+    trust1: "Free to use", trust2: "No account needed", trust3: "We don't store your CV",
+    trust4: "Instant PDF Export", trust5: "AI-Powered Analysis", trust6: "ATS-Friendly Format",
+    step1num: "01", step1title: "Your CV", dropArea: "Drop your CV here", supports: "Supports PDF, DOCX, or TXT",
+    reading: "Reading your CV...", extracting: "Extracting text from your file", found: "Found {word} words",
+    remove: "Remove file", paste: "Or paste your resume text directly here...",
+    jobLabel: "Target Job Title (Optional)", jobPh: "e.g., Senior Software Engineer...",
+    convert: "Optimize & Generate PDF", converting: "Optimizing...", step2num: "02", step2title: "Preview & Results",
+    statusLabel: "Status Update", statusTitle: "ATS Compatibility Score", scoreMax: "Out of 100 — ",
+    scoreGood: "Excellent! Your CV is ready and meets top standards.", scoreOk: "Good, but a few tweaks will increase your chances.", scoreBad: "Needs major improvements to land interviews.",
+    download: "Download PDF", copy: "Copy Text", copied: "Copied!", guideTitle: "Precision in three steps",
+    g1num: "01", g1title: "Upload CV", g1desc: "Securely upload your current resume. We support all major formats including PDF, DOCX, and TXT.",
+    g2num: "02", g2title: "AI Analysis", g2desc: "Our proprietary AI identifies gaps, keywords, and formatting issues that hold you back from top roles.",
+    g3num: "03", g3title: "Download PDF", g3desc: "Receive a clean, ATS-compliant PDF ready for submission. Optimized for both humans and bots.",
+    footerText: "© 2024 FixYourCV. AI-Powered Excellence.", contact: "Contact", twitter: "Twitter 𝕏", github: "GitHub"
+  },
+  ar: {
+    navSubtitle: "الأداة الأولى لتحسين السيرة الذاتية", heroBadge: "مدعوم بالذكاء الاصطناعي",
+    heroTitle1: "احصل على مقابلات عمل أكثر، ", heroTitle2: "ابتداءً من اليوم",
+    heroSub: "قم برفع سيرتك الذاتية واحصل على نسخة PDF محسنة ومصممة باحترافية لتتخطى أنظمة (ATS) في ثوانٍ — مجاناً بالكامل.",
+    stat1: "10K+", stat1Lbl: "سيرة ذاتية حسنت", stat2: "91%", stat2Lbl: "متوسط التقييم", stat3: "مجاناً", stat3Lbl: "دائماً",
+    trust1: "مجاني الاستخدام", trust2: "لا حاجة لإنشاء حساب", trust3: "لا نحتفظ بسيرتك الذاتية",
+    trust4: "تصدير PDF فوري", trust5: "مدعوم بالذكاء الاصطناعي", trust6: "متوافق مع أنظمة التوظيف (ATS)",
+    step1num: "01", step1title: "سيرتك الذاتية", dropArea: "ضع سيرتك الذاتية هنا", supports: "ندعم ملفات PDF، DOCX، أو TXT",
+    reading: "جاري قراءة سيرتك الذاتية...", extracting: "استخراج النص من الملف الخاص بك", found: "تعرّف على {word} كلمة",
+    remove: "حذف الملف", paste: "أو الصق نص سيرتك الذاتية مباشرة هنا...",
+    jobLabel: "المسمى الوظيفي المستهدف (اختياري)", jobPh: "مثال: مهندس برمجيات أول...",
+    convert: "تحويل وإنشاء PDF", converting: "جاري التحويل...", step2num: "02", step2title: "المعاينة والنتائج",
+    statusLabel: "تحديث الحالة", statusTitle: "معدل اجتياز الـ ATS", scoreMax: "من 100 — ",
+    scoreGood: "ممتاز! السيرة جاهزة وتواكب أفضل المعايير.", scoreOk: "جيد، لكن القليل من التحسينات ستزيد فرصك.", scoreBad: "يحتاج إلى تحسين جذري للحصول على مقابلات.",
+    download: "تحميل PDF", copy: "نسخ النص", copied: "تم النسخ!", guideTitle: "الدقة في ثلاث خطوات",
+    g1num: "01", g1title: "رفع السيرة الذاتية", g1desc: "قم برفع سيرتك الذاتية بأمان. نحن ندعم جميع الصيغ الرئيسية بما في ذلك PDF، و DOCX، والنص المباشر.",
+    g2num: "02", g2title: "تحليل الذكاء الاصطناعي", g2desc: "يقوم الذكاء الاصطناعي الخاص بنا بتحديد الفجوات وإصلاح الكلمات المفتاحية ومشاكل التنسيق التي تعيق وصولك.",
+    g3num: "03", g3title: "تحميل ملف PDF", g3desc: "احصل على ملف PDF بتصميم نظيف ومتوافق تماماً مع أنظمة الفرز (ATS)، جاهز للتقديم الفوري.",
+    footerText: "© 2024 FixYourCV. AI-Powered Excellence.", contact: "تواصل معنا", twitter: "تويتر 𝕏", github: "جيت هب"
+  }
+};
+
 // ─── Main App ─────────────────────────────────────────────────────────────────
 export default function App() {
+  const [lang, setLang] = useState("en"); // <-- Default to English
+  const t = (key, params) => { let s = DICT[lang][key] || ""; if(params?.word) s = s.replace("{word}", params.word); return s; };
+
   const [file, setFile] = useState(null);
   const [rawText, setRawText] = useState("");
   const [jobTitle, setJobTitle] = useState("");
@@ -677,62 +724,71 @@ export default function App() {
     <>
       <style>{STYLES}</style>
       <ToastContainer toasts={toasts} onDismiss={dismissToast} />
-      <div className="app">
-        <div className="header">
-          <div className="logo-area">
-            <h1>Fix<span>your</span>CV</h1>
-            <p className="ar" style={{ marginTop: 10, fontSize: "0.95rem" }}>الأداة الأولى لتحسين السيرة الذاتية</p>
-            <span className="badge">مدعوم بالذكاء الاصطناعي</span>
+      <div className="app" dir={lang === 'ar' ? 'rtl' : 'ltr'}>
+        <div className="header" style={{ position: "relative", justifyContent: "space-between", alignItems: "flex-start" }}>
+          <div className="left-actions" style={{ zIndex: 10, marginTop: "8px" }}>
+            <span className="badge">{t("heroBadge")}</span>
           </div>
-          <button className="theme-btn" onClick={() => setTheme(t => t === "dark" ? "light" : "dark")} aria-label="Toggle theme">
-            {theme === "dark" ? "☀️" : "🌙"}
-          </button>
+          
+          <div className="logo-area" style={{ position: "absolute", left: "50%", transform: "translateX(-50%)", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
+            <h1>Fix<span style={{ color: "var(--primary)" }}>Your</span>CV</h1>
+            <p className={lang === 'ar' ? "ar" : ""} style={{ marginTop: 10, fontSize: "0.95rem" }}>{t("navSubtitle")}</p>
+          </div>
+
+          <div className="right-actions" style={{ display: "flex", gap: "10px", zIndex: 10, marginTop: "8px" }}>
+            <button className="theme-btn" style={{ fontSize: "14px", fontWeight: "bold" }} onClick={() => setLang(l => l === "en" ? "ar" : "en")} aria-label="Toggle language">
+              {lang === "en" ? "عربي" : "EN"}
+            </button>
+            <button className="theme-btn" onClick={() => setTheme(t => t === "dark" ? "light" : "dark")} aria-label="Toggle theme">
+              {theme === "dark" ? "☀️" : "🌙"}
+            </button>
+          </div>
         </div>
 
         {/* ── HERO ── */}
-        <div className="hero ar-center">
+        <div className={`hero ${lang === 'ar' ? 'ar-center' : ''}`} style={{ textAlign: "center" }}>
           <div className="hero-tagline" style={{ justifyContent: "center" }}><span style={{ direction: "ltr" }}>AI-Powered Resume Optimizer</span></div>
-          <h2>احصل على مقابلات عمل أكثر،<br /><span>ابتداءً من اليوم</span></h2>
-          <p className="hero-sub" style={{ margin: "0 auto 30px" }}>قم برفع سيرتك الذاتية واحصل على نسخة PDF محسنة ومصممة باحترافية لتتخطى أنظمة (ATS) في ثوانٍ — مجاناً بالكامل.</p>
-          <div className="hero-stats" style={{ justifyContent: "center" }}>
-            <div className="hero-stat"><span className="num" style={{ direction: "ltr" }}>10K+</span><span className="label ar">سيرة ذاتية حسنت</span></div>
-            <div className="hero-stat"><span className="num" style={{ direction: "ltr" }}>91%</span><span className="label ar">متوسط التقييم</span></div>
-            <div className="hero-stat"><span className="num">مجاناً</span><span className="label ar">دائماً</span></div>
+          <h2>{t("heroTitle1")}<br /><span>{t("heroTitle2")}</span></h2>
+          <p className="hero-sub" style={{ margin: "0 auto 30px" }}>{t("heroSub")}</p>
+          <div className="hero-stats" style={{ justifyContent: "center", direction: lang === 'ar' ? 'rtl' : 'ltr' }}>
+            <div className="hero-stat"><span className="num" style={{ direction: "ltr" }}>10K+</span><span className={`label ${lang === 'ar' ? 'ar' : ''}`}>{t("stat1Lbl")}</span></div>
+            <div className="hero-stat"><span className="num" style={{ direction: "ltr" }}>91%</span><span className={`label ${lang === 'ar' ? 'ar' : ''}`}>{t("stat2Lbl")}</span></div>
+            <div className="hero-stat"><span className="num">{t("stat3")}</span><span className={`label ${lang === 'ar' ? 'ar' : ''}`}>{t("stat3Lbl")}</span></div>
           </div>
         </div>
 
         {/* ── HOW IT WORKS ── */}
-        <div className="how-strip ar">
+        <div className={`how-strip ${lang === 'ar' ? 'ar' : ''}`} style={{ direction: lang === 'ar' ? 'rtl' : 'ltr' }}>
           {[
-            ["1", "ارفع سيرتك الذاتية", "ارفع ملف PDF، DOCX، أو TXT — أو الصق النص مباشرةً."],
-            ["2", "تحليل وتحسين بالذكاء الاصطناعي", "يقوم نموذج LLaMA 3 بإعادة صياغة سيرتك لتطابق كلمات ATS."],
-            ["3", "تحميل بصيغة PDF", "احصل على سيرة ذاتية نظيفة وجاهزة مع تقييمك ونصائح للتحسين."]
-          ].map(([n,t,d]) => (
+            ["1", t("g1title"), t("g1desc")],
+            ["2", t("g2title"), t("g2desc")],
+            ["3", t("g3title"), t("g3desc")]
+          ].map(([n,tx,d]) => (
             <div className="how-step" key={n}>
               <div className="how-num">{n}</div>
-              <div className="how-text"><h4>{t}</h4><p>{d}</p></div>
+              <div className="how-text"><h4>{tx}</h4><p>{d}</p></div>
             </div>
           ))}
         </div>
 
         {/* ── TRUST BADGES ── */}
-        <div className="trust-badges ar" style={{ justifyContent: "center" }}>
+        <div className={`trust-badges ${lang === 'ar' ? 'ar' : ''}`} style={{ justifyContent: "center", direction: lang === 'ar' ? 'rtl' : 'ltr' }}>
           {[
-            ["✓", "مجاني الاستخدام"],
-            ["✓", "لا حاجة لإنشاء حساب"],
-            ["✓", "لا نحتفظ بسيرتك الذاتية"],
-            ["✓", "تصدير PDF فوري"],
-            ["✓", "مدعوم بالذكاء الاصطناعي"],
-            ["✓", "متوافق مع أنظمة التوظيف (ATS)"]
-          ].map(([c,t]) => (
-            <div className="trust-badge" key={t}><span className="check">{c}</span>{t}</div>
+            ["✓", t("trust1")],
+            ["✓", t("trust2")],
+            ["✓", t("trust3")],
+            ["✓", t("trust4")],
+            ["✓", t("trust5")],
+            ["✓", t("trust6")]
+          ].map(([c,tx]) => (
+            <div className="trust-badge" key={tx}><span className="check">{c}</span>{tx}</div>
           ))}
         </div>
 
-        <div className="main-grid">
+        <div className="main-grid" style={{ direction: lang === 'ar' ? 'rtl' : 'ltr' }}>
           <div>
-            <div className="panel ar">
-              <div className="panel-header" style={{ flexDirection: "row-reverse" }}><span className="num">01</span><h2>سيرتك الذاتية</h2></div>
+            <div className={`panel ${lang === 'ar' ? 'ar' : ''}`}>
+              <div className="panel-header" style={{ flexDirection: lang === 'ar' ? "row-reverse" : "row" }}><span className="num">01</span><h2>{t("step1title")}</h2></div>
               <div className="panel-body">
                 {!file && !extracting ? (
                   <div className={`upload-zone ${dragging ? "dragging" : ""}`}
@@ -741,78 +797,85 @@ export default function App() {
                     onDrop={(e) => { e.preventDefault(); setDragging(false); handleFile(e.dataTransfer.files[0]); }}>
                     <input ref={fileInputRef} type="file" accept=".pdf,.docx,.txt" onChange={(e) => handleFile(e.target.files[0])} />
                     <span className="upload-icon">📄</span>
-                    <h3>ضع سيرتك الذاتية هنا</h3>
-                    <p>ندعم ملفات PDF، DOCX، أو TXT</p>
+                    <h3>{t("dropArea")}</h3>
+                    <p>{t("supports")}</p>
                   </div>
                 ) : extracting ? (
                   <div className="upload-zone" style={{ pointerEvents: "none" }}>
                     <div className="extract-overlay">
                       <div className="big-spinner" />
-                      <p>جاري قراءة سيرتك الذاتية...</p>
-                      <small>استخراج النص من الملف الخاص بك</small>
+                      <p>{t("reading")}</p>
+                      <small>{t("extracting")}</small>
                     </div>
                     <span className="upload-icon" style={{ opacity: 0.15 }}>📄</span>
-                    <h3 style={{ opacity: 0.15 }}>ضع سيرتك الذاتية هنا</h3>
-                    <p style={{ opacity: 0.15 }}>ندعم ملفات PDF، DOCX، أو TXT</p>
+                    <h3 style={{ opacity: 0.15 }}>{t("dropArea")}</h3>
+                    <p style={{ opacity: 0.15 }}>{t("supports")}</p>
                   </div>
                 ) : (
-                  <div className="file-loaded" style={{ flexDirection: "row-reverse", textAlign: "right" }}>
+                  <div className="file-loaded" style={{ flexDirection: lang === 'ar' ? "row-reverse" : "row", textAlign: lang === 'ar' ? "right" : "left" }}>
                     <span>✅</span>
-                    <div className="file-info" style={{ marginLeft: "auto", marginRight: 0 }}>
-                      <div className="file-name" style={{ direction: "ltr", textAlign: "right" }}>{file.name}</div>
-                      <div className="file-meta">{(file.size / 1024).toFixed(1)} KB · تم استخراج {rawText.split(/\s+/).length} كلمة</div>
+                    <div className="file-info" style={lang === 'ar' ? { marginLeft: "auto", marginRight: 0 } : { marginRight: "auto", marginLeft: 0 }}>
+                      <div className="file-name" style={{ direction: "ltr", textAlign: lang === 'ar' ? "right" : "left" }}>{file.name}</div>
+                      <div className="file-meta">{(file.size / 1024).toFixed(1)} KB · {t("found", {word: rawText.split(/\s+/).length})}</div>
                     </div>
-                    <button className="btn-remove" onClick={reset}>حذف</button>
+                    <button className="btn-remove" onClick={reset}>{t("remove")}</button>
                   </div>
                 )}
-                <textarea className="cv-textarea ar" placeholder="أو الصق نص سيرتك الذاتية مباشرة هنا..." value={rawText} onChange={(e) => setRawText(e.target.value)} rows={8} />
-                <span className="field-label ar">المسمى الوظيفي المستهدف (اختياري)</span>
-                <input className="job-input ar" placeholder="مثال: مهندس برمجيات أول..." value={jobTitle} onChange={(e) => setJobTitle(e.target.value)} />
+                <textarea className={`cv-textarea ${lang === 'ar' ? 'ar' : ''}`} placeholder={t("paste")} value={rawText} onChange={(e) => setRawText(e.target.value)} rows={8} />
+                <span className={`field-label ${lang === 'ar' ? 'ar' : ''}`}>{t("jobLabel")}</span>
+                <input className={`job-input ${lang === 'ar' ? 'ar' : ''}`} placeholder={t("jobPh")} value={jobTitle} onChange={(e) => setJobTitle(e.target.value)} />
 
-                <button className="btn-convert" style={{ flexDirection: "row-reverse" }} onClick={convert} disabled={loading || !rawText.trim()}>
-                  {loading ? <><div className="spinner" /> جاري التحويل...</> : <>← تحويل وإنشاء PDF</>}
+                <button className="btn-convert" style={{ flexDirection: lang === 'ar' ? "row-reverse" : "row" }} onClick={convert} disabled={loading || !rawText.trim()}>
+                  {loading ? <><div className="spinner" /> {t("converting")}</> : <>{lang === 'ar' ? '←' : ''} {t("convert")} {lang === 'en' ? '→' : ''}</>}
                 </button>
               </div>
             </div>
-            <div className="tips-grid ar" style={{ marginTop: 16 }}>
-              {[
+            <div className={`tips-grid ${lang === 'ar' ? 'ar' : ''}`} style={{ marginTop: 16 }}>
+              {lang === 'ar' ? [
                 ["بدون جداول/أعمدة", "أنظمة ATS لا يمكنها قراءة التخطيطات متعددة الأعمدة"],
                 ["خطوط بسيطة", "Arial, Calibri, Times New Roman"],
                 ["عناوين قياسية", "استخدم العناوين التي تتوقعها أنظمة ATS"],
                 ["الكلمات المفتاحية", "طابق الكلمات الموجودة في الوصف الوظيفي"]
-              ].map(([t,d]) => (
-                <div className="tip" key={t}><strong>{t}</strong>{d}</div>
+              ].map(([tx,d]) => (
+                <div className="tip" key={tx}><strong>{tx}</strong>{d}</div>
+              )) : [
+                ["No Tables/Columns", "ATS systems cannot read multi-column layouts"],
+                ["Simple Fonts", "Arial, Calibri, Times New Roman"],
+                ["Standard Headings", "Use standard headings ATS expects"],
+                ["Keywords", "Match keywords found in the job description"]
+              ].map(([tx,d]) => (
+                <div className="tip" key={tx}><strong>{tx}</strong>{d}</div>
               ))}
             </div>
           </div>
 
-          <div className="panel ar">
-            <div className="panel-header" style={{ flexDirection: "row-reverse" }}><span className="num">02</span><h2>السيرة الذاتية المحسنة</h2></div>
+          <div className={`panel ${lang === 'ar' ? 'ar' : ''}`}>
+            <div className="panel-header" style={{ flexDirection: lang === 'ar' ? "row-reverse" : "row" }}><span className="num">02</span><h2>{t("step2title")}</h2></div>
             <div className="panel-body">
               {loading ? (
                 <div className="loading-state"><div className="big-spinner" /><p style={{ direction: "ltr" }}>{loadingMsg}</p></div>
               ) : result ? (
                 <>
                   {result.score != null && (
-                    <div className="score-card" style={{ flexDirection: "row-reverse" }}>
+                    <div className="score-card" style={{ flexDirection: lang === 'ar' ? "row-reverse" : "row" }}>
                       <div className="score-num" style={{ direction: "ltr" }}>{displayScore}</div>
-                      <div className="score-details" style={{ textAlign: "right" }}>
-                        <h4>درجة توافق أنظمة (ATS)</h4>
-                        <p>من 100 — {result.score >= 80 ? "ممتاز!" : result.score >= 60 ? "جيد، يحتاج تعديلات بسيطة" : "يحتاج إلى تحسين"}</p>
-                        <div className="score-bar" style={{ transform: "rotate(180deg)" }}><div className="score-bar-fill" style={{ width: `${result.score}%` }} /></div>
+                      <div className="score-details" style={{ textAlign: lang === 'ar' ? "right" : "left" }}>
+                        <h4>{t("statusTitle")}</h4>
+                        <p>{t("scoreMax")} {result.score >= 80 ? t("scoreGood") : result.score >= 60 ? t("scoreOk") : t("scoreBad")}</p>
+                        <div className="score-bar" style={{ transform: lang === 'ar' ? "rotate(180deg)" : "none" }}><div className="score-bar-fill" style={{ width: `${result.score}%` }} /></div>
                       </div>
                     </div>
                   )}
                   <div style={{ direction: "ltr", textAlign: "left" }}><CVPreview data={result} /></div>
                   {result.tips?.length > 0 && (
                     <div className="tips-list">
-                      {result.tips.map((tip, i) => <div className="tip-item" style={{ flexDirection: "row-reverse" }} key={i}>{tip}</div>)}
+                      {result.tips.map((tip, i) => <div className="tip-item" style={{ flexDirection: lang === 'ar' ? "row-reverse" : "row" }} key={i}>{tip}</div>)}
                     </div>
                   )}
-                  <div className="output-actions" style={{ flexDirection: "row-reverse" }}>
-                    <button className="btn-action highlight" onClick={() => generatePDF(result)}>⬇ تحميل PDF</button>
-                    <button className="btn-action" onClick={copyAsText}>{copied ? "✓ تم النسخ!" : "⎘ نسخ النص"}</button>
-                    <button className="btn-action primary" onClick={reset}>سيرة ذاتية جديدة</button>
+                  <div className="output-actions" style={{ flexDirection: lang === 'ar' ? "row-reverse" : "row" }}>
+                    <button className="btn-action highlight" onClick={() => generatePDF(result)}>⬇ {t("download")}</button>
+                    <button className="btn-action" onClick={copyAsText}>{copied ? `✓ ${t("copied")}` : `⎘ ${t("copy")}`}</button>
+                    <button className="btn-action primary" onClick={reset}>{t("remove")}</button>
                   </div>
                 </>
               ) : (
@@ -826,8 +889,8 @@ export default function App() {
                     <rect x="10" y="50" width="30" height="2" rx="1" fill="currentColor" opacity="0.2"/>
                     <rect x="10" y="11" width="18" height="4" rx="2" fill="currentColor" opacity="0.45"/>
                   </svg>
-                  <p>ارفع سيرتك الذاتية واضغط على تحويل</p>
-                  <p style={{ opacity: 0.5 }}>سيتم إنشاء ملف PDF متوافق ونظيف</p>
+                  <p>{lang === 'ar' ? 'ارفع سيرتك الذاتية واضغط على تحويل' : 'Upload your CV and press optimize'}</p>
+                  <p style={{ opacity: 0.5 }}>{lang === 'ar' ? 'سيتم إنشاء ملف PDF متوافق ونظيف' : 'A clean, ATS-compliant PDF will be generated'}</p>
                 </div>
               )}
             </div>
@@ -845,12 +908,11 @@ export default function App() {
         </div>
 
         {/* ── CONTACT SECTION — edit the details below ── */}
-        <div className="contact ar-center">
+        <div className={`contact ${lang === 'ar' ? 'ar-center' : ''}`} style={{ textAlign: "center", direction: lang === 'ar' ? 'rtl' : 'ltr' }}>
           <div className="contact-label" style={{ direction: "ltr" }}>// get in touch</div>
-          <h2>دعنا <span>نتواصل</span></h2>
-          <p>هل لديك سؤال، اقتراح، أو تريد فقط إلقاء التحية؟<br />لا تتردد في التواصل معي — يسعدني سماع رأيك.</p>
-          <div className="contact-links" style={{ flexDirection: "row-reverse" }}>
-            {/* TODO: replace href values with your real links */}
+          <h2>{lang === 'ar' ? 'دعنا' : 'Get in' } <span>{lang === 'ar' ? 'نتواصل' : 'touch'}</span></h2>
+          <p>{lang === 'ar' ? 'هل لديك سؤال، اقتراح، أو تريد فقط إلقاء التحية؟ لا تتردد في التواصل معي — يسعدني سماع رأيك.' : 'Have a question, feedback, or just want to say hi? Feel free to reach out — I\'d love to hear from you.'}</p>
+          <div className="contact-links" style={{ justifyContent: "center", flexDirection: lang === 'ar' ? "row-reverse" : "row" }}>
             <a className="contact-link" href="mailto:your@email.com" style={{ direction: "ltr" }}>
               <span className="icon">✉</span> your@email.com
             </a>
@@ -863,7 +925,7 @@ export default function App() {
           </div>
         </div>
         {/* ───────────────────────────────────────────── */}
-        <div className="footer ar-center" style={{ direction: "ltr" }}>FixyourCV — مدعوم بالذكاء الاصطناعي · لا يتم تخزين سيرتك الذاتية أبدًا · مجاني الاستخدام</div>
+        <div className={`footer ${lang === 'ar' ? 'ar-center' : ''}`} style={{ direction: "ltr", textAlign: "center" }}>{t("footerText")}</div>
       </div>
     </>
   );
