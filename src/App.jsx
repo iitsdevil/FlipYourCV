@@ -206,6 +206,16 @@ const STYLES = `
   .testimonial-name { font-size: 0.76rem; font-weight: 700; }
   .testimonial-role { font-size: 0.67rem; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
   @media (max-width: 700px) { .testimonials-grid { grid-template-columns: 1fr; } }
+  /* ARABIC SCALING */
+  [dir="rtl"] .contact p, [dir="rtl"] .upload-zone p, [dir="rtl"] .upload-zone h3, [dir="rtl"] .output-empty p, [dir="rtl"] .cv-textarea::placeholder, [dir="rtl"] .job-input::placeholder {
+    font-family: 'Cairo', 'Inter', Tahoma, Arial, sans-serif;
+    font-weight: 600;
+  }
+  [dir="rtl"] .contact p { font-size: 1.15rem; }
+  [dir="rtl"] .upload-zone h3 { font-size: 1.35rem; font-weight: 700; }
+  [dir="rtl"] .upload-zone p { font-size: 1.05rem; }
+  [dir="rtl"] .output-empty p { font-size: 1.05rem; }
+  [dir="rtl"] .cv-textarea::placeholder, [dir="rtl"] .job-input::placeholder { font-size: 1.05rem; }
   /* MOBILE FIXES */
   @media (max-width: 480px) {
     .tips-grid { grid-template-columns: 1fr; }
