@@ -12,7 +12,8 @@ const STYLES = `
   }
   body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; }
   .app { max-width: 1100px; margin: 0 auto; padding: 40px 24px 80px; }
-  .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 56px; padding-bottom: 32px; border-bottom: 1px solid var(--border); }
+  .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 56px; padding: 20px 0; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; background: var(--bg); }
+  .header::before { content: ""; position: absolute; inset: 0; backdrop-filter: blur(10px); z-index: -1; }
   .header-left, .header-right { flex: 1; }
   .header-right { display: flex; gap: 10px; justify-content: flex-end; }
   .header-center { display: flex; flex-direction: column; align-items: center; text-align: center; }
@@ -118,6 +119,8 @@ const STYLES = `
   .tips-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 16px; }
   .tip { background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; padding: 12px; font-size: 0.72rem; color: var(--muted); font-family: 'JetBrains Mono', monospace; line-height: 1.5; }
   .tip strong { color: var(--text); display: block; margin-bottom: 2px; font-size: 0.75rem; }
+  .tips-grid.ar .tip { font-family: 'Cairo', 'Inter', Tahoma, Arial, sans-serif; font-size: 0.9rem; font-weight: 500; }
+  .tips-grid.ar .tip strong { font-size: 1rem; font-weight: 700; }
   .loading-state { min-height: 380px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; }
   .loading-state .big-spinner { width: 40px; height: 40px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
   .loading-state p { font-size: 0.8rem; color: var(--muted); font-family: 'JetBrains Mono', monospace; animation: pulse 1.5s ease-in-out infinite; }
@@ -173,6 +176,7 @@ const STYLES = `
   .hero h2 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(2.2rem, 5.5vw, 3.8rem); line-height: 1.06; letter-spacing: -1.5px; margin-bottom: 16px; }
   .hero h2 span { background: linear-gradient(135deg, var(--accent2) 0%, var(--accent) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
   .hero-sub { font-size: 0.88rem; color: var(--muted); font-family: 'JetBrains Mono', monospace; line-height: 1.75; max-width: 500px; margin-bottom: 30px; }
+  .hero-sub.ar { font-size: 1.15rem; font-family: 'Cairo', 'Inter', Tahoma, Arial, sans-serif; font-weight: 500; }
   .hero-stats { display: flex; gap: 32px; flex-wrap: wrap; }
   .hero-stat .num { font-family: 'Space Grotesk', sans-serif; font-size: 1.9rem; color: var(--accent); display: block; line-height: 1; }
   .hero-stat .label { font-size: 0.68rem; color: var(--muted); font-family: 'JetBrains Mono', monospace; letter-spacing: 0.06em; margin-top: 2px; display: block; }
@@ -182,10 +186,13 @@ const STYLES = `
   .how-num { font-family: 'Space Grotesk', sans-serif; font-size: 2rem; color: var(--accent); opacity: 0.35; line-height: 1; flex-shrink: 0; }
   .how-text h4 { font-size: 0.82rem; font-weight: 700; margin-bottom: 4px; letter-spacing: 0.03em; }
   .how-text p { font-size: 0.72rem; color: var(--muted); font-family: 'JetBrains Mono', monospace; line-height: 1.55; }
+  .how-strip.ar .how-text h4 { font-family: 'Cairo', 'Inter', Tahoma, Arial, sans-serif; font-size: 1.1rem; }
+  .how-strip.ar .how-text p { font-family: 'Cairo', 'Inter', Tahoma, Arial, sans-serif; font-size: 0.95rem; font-weight: 500; }
   @media (max-width: 600px) { .how-strip { grid-template-columns: 1fr; } }
   /* TRUST BADGES */
   .trust-badges { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 32px; }
   .trust-badge { display: flex; align-items: center; gap: 5px; padding: 5px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 100px; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted); }
+  .trust-badges.ar .trust-badge { font-family: 'Cairo', 'Inter', Tahoma, Arial, sans-serif; font-size: 0.85rem; font-weight: 500; }
   .trust-badge .check { color: var(--accent); }
   /* TESTIMONIALS */
   .testimonials { margin-top: 48px; }
