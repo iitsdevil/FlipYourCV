@@ -757,11 +757,6 @@ export default function App() {
           <div className="hero-tagline" style={{ justifyContent: "center" }}><span style={{ direction: "ltr" }}>AI-Powered Resume Optimizer</span></div>
           <h2>{t("heroTitle1")}<br /><span>{t("heroTitle2")}</span></h2>
           <p className={`hero-sub ${lang === 'ar' ? 'ar' : ''}`} style={{ margin: "0 auto 30px" }}>{t("heroSub")}</p>
-          <div className="hero-stats" style={{ justifyContent: "center", direction: lang === 'ar' ? 'rtl' : 'ltr' }}>
-            <div className="hero-stat"><span className="num" style={{ direction: "ltr" }}>10K+</span><span className={`label ${lang === 'ar' ? 'ar' : ''}`}>{t("stat1Lbl")}</span></div>
-            <div className="hero-stat"><span className="num" style={{ direction: "ltr" }}>91%</span><span className={`label ${lang === 'ar' ? 'ar' : ''}`}>{t("stat2Lbl")}</span></div>
-            <div className="hero-stat"><span className="num">{t("stat3")}</span><span className={`label ${lang === 'ar' ? 'ar' : ''}`}>{t("stat3Lbl")}</span></div>
-          </div>
         </div>
 
         {/* ── HOW IT WORKS ── */}
