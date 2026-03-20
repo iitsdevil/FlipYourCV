@@ -580,7 +580,7 @@ const DICT = {
     g1num: "01", g1title: "Upload CV", g1desc: "Securely upload your current resume. We support all major formats including PDF, DOCX, and TXT.",
     g2num: "02", g2title: "AI Analysis", g2desc: "Our proprietary AI identifies gaps, keywords, and formatting issues that hold you back from top roles.",
     g3num: "03", g3title: "Download PDF", g3desc: "Receive a clean, ATS-compliant PDF ready for submission. Optimized for both humans and bots.",
-    footerText: "© 2024 FixYourCV. AI-Powered Excellence.", contact: "Contact", twitter: "Twitter 𝕏", github: "GitHub"
+    footerText: "© 2024 FlipYourCV. AI-Powered Excellence.", contact: "Contact", twitter: "Twitter 𝕏", github: "GitHub"
   },
   ar: {
     navSubtitle: "الأداة الأولى لتحسين السيرة الذاتية", heroBadge: "مدعوم بالذكاء الاصطناعي",
@@ -600,7 +600,7 @@ const DICT = {
     g1num: "01", g1title: "رفع السيرة الذاتية", g1desc: "قم برفع سيرتك الذاتية بأمان. نحن ندعم جميع الصيغ الرئيسية بما في ذلك PDF، و DOCX، والنص المباشر.",
     g2num: "02", g2title: "تحليل الذكاء الاصطناعي", g2desc: "يقوم الذكاء الاصطناعي الخاص بنا بتحديد الفجوات وإصلاح الكلمات المفتاحية ومشاكل التنسيق التي تعيق وصولك.",
     g3num: "03", g3title: "تحميل ملف PDF", g3desc: "احصل على ملف PDF بتصميم نظيف ومتوافق تماماً مع أنظمة الفرز (ATS)، جاهز للتقديم الفوري.",
-    footerText: "© 2024 FixYourCV. AI-Powered Excellence.", contact: "تواصل معنا", twitter: "تويتر 𝕏", github: "جيت هب"
+    footerText: "© 2024 FlipYourCV. AI-Powered Excellence.", contact: "تواصل معنا", twitter: "تويتر 𝕏", github: "جيت هب"
   }
 };
 
@@ -655,7 +655,7 @@ export default function App() {
     // Clear any previous widget
     turnstileRef.current.innerHTML = "";
     window.turnstile.render(turnstileRef.current, {
-      sitekey: "0x4AAAAAACtiYlNeMBElx1HD",
+      sitekey: "0x4AAAAAACtiYrndepol3xuQRxaBZP4itAY",
       callback: (token) => setTurnstileToken(token),
       "expired-callback": () => setTurnstileToken(""),
       theme: theme === "dark" ? "dark" : "light",
@@ -739,7 +739,7 @@ export default function App() {
       if (window.turnstile && turnstileRef.current) {
         turnstileRef.current.innerHTML = "";
         window.turnstile.render(turnstileRef.current, {
-          sitekey: "0x4AAAAAACtiYlNeMBElx1HD",
+          sitekey: "0x4AAAAAACtiYrndepol3xuQRxaBZP4itAY",
           callback: (token) => setTurnstileToken(token),
           "expired-callback": () => setTurnstileToken(""),
           theme: theme === "dark" ? "dark" : "light",
@@ -781,7 +781,7 @@ export default function App() {
           <div className="header-left"></div>
 
           <div className="logo-area header-center">
-            <h1><span style={{ color: "var(--accent)" }}>FixYourCV</span></h1>
+            <h1><span style={{ color: "var(--accent)" }}>FlipYourCV</span></h1>
             <span className={`badge ${lang === 'ar' ? 'ar' : ''}`} style={{ marginTop: 12, fontSize: '1rem' }}>{t("navSubtitle")}</span>
           </div>
 

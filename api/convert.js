@@ -5,6 +5,9 @@
 // ─── CORS Configuration ──────────────────────────────────────────────────────
 // Add your production domain here when you deploy
 const ALLOWED_ORIGINS = [
+  "http://localhost:5173",
+  "https://flipyourcv.vercel.app",
+  "https://www.flipyourcv.vercel.app",
   "https://fixyourcv.vercel.app",
   "https://www.fixyourcv.vercel.app",
 ];
