@@ -477,67 +477,67 @@ function CVPreview({ data }) {
 
       {data.experience?.length > 0 && (
         <><div className="cv-section-title">Work Experience</div>
-        {data.experience.map((job, i) => (
-          <div className="cv-job" key={i}>
-            <div className="cv-job-header">
-              <div><span className="cv-job-title">{job.title}</span>{job.company && <span className="cv-job-company"> — {job.company}</span>}</div>
-              <span className="cv-job-duration">{job.duration}</span>
+          {data.experience.map((job, i) => (
+            <div className="cv-job" key={i}>
+              <div className="cv-job-header">
+                <div><span className="cv-job-title">{job.title}</span>{job.company && <span className="cv-job-company"> — {job.company}</span>}</div>
+                <span className="cv-job-duration">{job.duration}</span>
+              </div>
+              <ul className="cv-bullets">{(job.bullets || []).map((b, j) => <li key={j}>{b}</li>)}</ul>
             </div>
-            <ul className="cv-bullets">{(job.bullets || []).map((b, j) => <li key={j}>{b}</li>)}</ul>
-          </div>
-        ))}</>
+          ))}</>
       )}
 
       {data.education?.length > 0 && (
         <><div className="cv-section-title">Education</div>
-        {data.education.map((edu, i) => (
-          <div className="cv-edu-row" key={i}>
-            <div><div className="cv-edu-degree">{edu.degree}</div><div className="cv-edu-school">{edu.institution}</div></div>
-            <div className="cv-edu-year">{edu.year}</div>
-          </div>
-        ))}</>
+          {data.education.map((edu, i) => (
+            <div className="cv-edu-row" key={i}>
+              <div><div className="cv-edu-degree">{edu.degree}</div><div className="cv-edu-school">{edu.institution}</div></div>
+              <div className="cv-edu-year">{edu.year}</div>
+            </div>
+          ))}</>
       )}
 
       {data.skills?.length > 0 && (
         <><div className="cv-section-title">Skills</div>
-        <div className="cv-skills-wrap">{data.skills.map((s, i) => <span className="cv-skill" key={i}>{s}</span>)}</div></>
+          <div className="cv-skills-wrap">{data.skills.map((s, i) => <span className="cv-skill" key={i}>{s}</span>)}</div></>
       )}
 
       {data.languages?.length > 0 && (
         <><div className="cv-section-title">Languages</div>
-        <div className="cv-lang-grid">
-          {data.languages.map((l, i) => (
-            <div key={i}><div className="cv-lang-item">{l.language}</div><div className="cv-lang-level">{l.level}</div></div>
-          ))}
-        </div></>
+          <div className="cv-lang-grid">
+            {data.languages.map((l, i) => (
+              <div key={i}><div className="cv-lang-item">{l.language}</div><div className="cv-lang-level">{l.level}</div></div>
+            ))}
+          </div></>
       )}
 
       {data.certifications?.length > 0 && (
         <><div className="cv-section-title">Certifications</div>
-        <ul className="cv-bullets">{data.certifications.map((c, i) => <li key={i}>{c}</li>)}</ul></>
+          <ul className="cv-bullets">{data.certifications.map((c, i) => <li key={i}>{c}</li>)}</ul></>
       )}
 
       {data.hobbies?.length > 0 && (
         <><div className="cv-section-title">Hobbies & Interests</div>
-        <div className="cv-hobbies">{data.hobbies.join("  •  ")}</div></>
+          <div className="cv-hobbies">{data.hobbies.join("  •  ")}</div></>
       )}
 
       {data.references?.length > 0 && (
         <><div className="cv-section-title">References</div>
-        {data.references[0]?.name?.toLowerCase().includes("available") ? (
-          <div className="cv-hobbies">Available upon request</div>
-        ) : (
-          <div className="cv-ref-grid">
-            {data.references.map((r, i) => (
-              <div className="cv-ref-item" key={i}>
-                <div className="cv-ref-name">{r.name}</div>
-                {r.title && <div>{r.title}</div>}
-                {r.company && <div>{r.company}</div>}
-                {r.contact && <div style={{color:"#777"}}>{r.contact}</div>}
-              </div>
-            ))}
-          </div>
-        )}</>
+          {data.references[0]?.name?.toLowerCase().includes("available") ? (
+            <div className="cv-hobbies">Available upon request</div>
+          ) : (
+            <div className="cv-ref-grid">
+              {data.references.map((r, i) => (
+                <div className="cv-ref-item" key={i}>
+                  <div className="cv-ref-name">{r.name}</div>
+                  {r.title && <div>{r.title}</div>}
+                  {r.company && <div>{r.company}</div>}
+                  {r.contact && <div style={{ color: "#777" }}>{r.contact}</div>}
+                </div>
+              ))}
+            </div>
+          )}</>
       )}
     </div>
   );
@@ -590,7 +590,7 @@ const DICT = {
 // ─── Main App ─────────────────────────────────────────────────────────────────
 export default function App() {
   const [lang, setLang] = useState("en"); // <-- Default to English
-  const t = (key, params) => { let s = DICT[lang][key] || ""; if(params?.word) s = s.replace("{word}", params.word); return s; };
+  const t = (key, params) => { let s = DICT[lang][key] || ""; if (params?.word) s = s.replace("{word}", params.word); return s; };
 
   const [file, setFile] = useState(null);
   const [rawText, setRawText] = useState("");
@@ -627,7 +627,7 @@ export default function App() {
 
   // Push AdSense ad after component mounts (required in React SPAs)
   useEffect(() => {
-    try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch (_) {}
+    try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch (_) { }
   }, []);
 
   const showToast = (message, type = "error") => {
@@ -735,10 +735,10 @@ export default function App() {
       <div className="app" dir={lang === 'ar' ? 'rtl' : 'ltr'}>
         <div className="header">
           <div className="header-left"></div>
-          
+
           <div className="logo-area header-center">
             <h1><span style={{ color: "var(--accent)" }}>FixYourCV</span></h1>
-            <p className={lang === 'ar' ? "ar" : ""} style={{ marginTop: 10, fontSize: "1.15rem" }}>{t("navSubtitle")}</p>
+            <p className={lang === 'ar' ? "ar" : ""} style={{ marginTop: 10, fontSize: "1.5rem" }}>{t("navSubtitle")}</p>
             <span className="badge">{t("heroBadge")}</span>
           </div>
 
@@ -770,7 +770,7 @@ export default function App() {
             ["1", t("g1title"), t("g1desc")],
             ["2", t("g2title"), t("g2desc")],
             ["3", t("g3title"), t("g3desc")]
-          ].map(([n,tx,d]) => (
+          ].map(([n, tx, d]) => (
             <div className="how-step" key={n}>
               <div className="how-num">{n}</div>
               <div className="how-text"><h4>{tx}</h4><p>{d}</p></div>
@@ -787,7 +787,7 @@ export default function App() {
             ["✓", t("trust4")],
             ["✓", t("trust5")],
             ["✓", t("trust6")]
-          ].map(([c,tx]) => (
+          ].map(([c, tx]) => (
             <div className="trust-badge" key={tx}><span className="check">{c}</span>{tx}</div>
           ))}
         </div>
@@ -823,7 +823,7 @@ export default function App() {
                     <span>✅</span>
                     <div className="file-info" style={lang === 'ar' ? { marginLeft: "auto", marginRight: 0 } : { marginRight: "auto", marginLeft: 0 }}>
                       <div className="file-name" style={{ direction: "ltr", textAlign: lang === 'ar' ? "right" : "left" }}>{file.name}</div>
-                      <div className="file-meta">{(file.size / 1024).toFixed(1)} KB · {t("found", {word: rawText.split(/\s+/).length})}</div>
+                      <div className="file-meta">{(file.size / 1024).toFixed(1)} KB · {t("found", { word: rawText.split(/\s+/).length })}</div>
                     </div>
                     <button className="btn-remove" onClick={reset}>{t("remove")}</button>
                   </div>
@@ -843,14 +843,14 @@ export default function App() {
                 ["خطوط بسيطة", "Arial, Calibri, Times New Roman"],
                 ["عناوين قياسية", "استخدم العناوين التي تتوقعها أنظمة ATS"],
                 ["الكلمات المفتاحية", "طابق الكلمات الموجودة في الوصف الوظيفي"]
-              ].map(([tx,d]) => (
+              ].map(([tx, d]) => (
                 <div className="tip" key={tx}><strong>{tx}</strong>{d}</div>
               )) : [
                 ["No Tables/Columns", "ATS systems cannot read multi-column layouts"],
                 ["Simple Fonts", "Arial, Calibri, Times New Roman"],
                 ["Standard Headings", "Use standard headings ATS expects"],
                 ["Keywords", "Match keywords found in the job description"]
-              ].map(([tx,d]) => (
+              ].map(([tx, d]) => (
                 <div className="tip" key={tx}><strong>{tx}</strong>{d}</div>
               ))}
             </div>
@@ -887,14 +887,14 @@ export default function App() {
                 </>
               ) : (
                 <div className="output-empty">
-                  <svg width="56" height="70" viewBox="0 0 56 70" fill="none" style={{color:"var(--border)",marginBottom:4}}>
-                    <rect x="1" y="1" width="54" height="68" rx="3" stroke="currentColor" strokeWidth="1.5" strokeDasharray="4 3"/>
-                    <rect x="10" y="18" width="36" height="2" rx="1" fill="currentColor" opacity="0.5"/>
-                    <rect x="10" y="26" width="28" height="2" rx="1" fill="currentColor" opacity="0.3"/>
-                    <rect x="10" y="34" width="32" height="2" rx="1" fill="currentColor" opacity="0.3"/>
-                    <rect x="10" y="42" width="24" height="2" rx="1" fill="currentColor" opacity="0.2"/>
-                    <rect x="10" y="50" width="30" height="2" rx="1" fill="currentColor" opacity="0.2"/>
-                    <rect x="10" y="11" width="18" height="4" rx="2" fill="currentColor" opacity="0.45"/>
+                  <svg width="56" height="70" viewBox="0 0 56 70" fill="none" style={{ color: "var(--border)", marginBottom: 4 }}>
+                    <rect x="1" y="1" width="54" height="68" rx="3" stroke="currentColor" strokeWidth="1.5" strokeDasharray="4 3" />
+                    <rect x="10" y="18" width="36" height="2" rx="1" fill="currentColor" opacity="0.5" />
+                    <rect x="10" y="26" width="28" height="2" rx="1" fill="currentColor" opacity="0.3" />
+                    <rect x="10" y="34" width="32" height="2" rx="1" fill="currentColor" opacity="0.3" />
+                    <rect x="10" y="42" width="24" height="2" rx="1" fill="currentColor" opacity="0.2" />
+                    <rect x="10" y="50" width="30" height="2" rx="1" fill="currentColor" opacity="0.2" />
+                    <rect x="10" y="11" width="18" height="4" rx="2" fill="currentColor" opacity="0.45" />
                   </svg>
                   <p>{lang === 'ar' ? 'ارفع سيرتك الذاتية واضغط على تحويل' : 'Upload your CV and press optimize'}</p>
                   <p style={{ opacity: 0.5 }}>{lang === 'ar' ? 'سيتم إنشاء ملف PDF متوافق ونظيف' : 'A clean, ATS-compliant PDF will be generated'}</p>
@@ -917,7 +917,7 @@ export default function App() {
         {/* ── CONTACT SECTION — edit the details below ── */}
         <div className={`contact ${lang === 'ar' ? 'ar-center' : ''}`} style={{ textAlign: "center", direction: lang === 'ar' ? 'rtl' : 'ltr' }}>
           <div className="contact-label" style={{ direction: "ltr" }}>// get in touch</div>
-          <h2>{lang === 'ar' ? 'دعنا' : 'Get in' } <span>{lang === 'ar' ? 'نتواصل' : 'touch'}</span></h2>
+          <h2>{lang === 'ar' ? 'دعنا' : 'Get in'} <span>{lang === 'ar' ? 'نتواصل' : 'touch'}</span></h2>
           <p>{lang === 'ar' ? 'هل لديك سؤال، اقتراح، أو تريد فقط إلقاء التحية؟ لا تتردد في التواصل معي — يسعدني سماع رأيك.' : 'Have a question, feedback, or just want to say hi? Feel free to reach out — I\'d love to hear from you.'}</p>
           <div className="contact-links" style={{ justifyContent: "center", flexDirection: lang === 'ar' ? "row-reverse" : "row" }}>
             <a className="contact-link" href="mailto:your@email.com" style={{ direction: "ltr" }}>
