@@ -745,8 +745,7 @@ export default function App() {
 
           <div className="logo-area header-center">
             <h1><span style={{ color: "var(--accent)" }}>FixYourCV</span></h1>
-            <p className={lang === 'ar' ? "ar" : ""} style={{ marginTop: 10, fontSize: "1.5rem" }}>{t("navSubtitle")}</p>
-            <span className="badge">{t("heroBadge")}</span>
+            <span className={`badge ${lang === 'ar' ? 'ar' : ''}`} style={{ marginTop: 12, fontSize: lang === 'ar' ? '1rem' : '0.9rem' }}>{t("navSubtitle")}</span>
           </div>
 
           <div className="header-right">
