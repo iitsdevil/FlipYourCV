@@ -216,6 +216,7 @@ const STYLES = `
   [dir="rtl"] .upload-zone p { font-size: 1.05rem; }
   [dir="rtl"] .output-empty p { font-size: 1.05rem; }
   [dir="rtl"] .cv-textarea::placeholder, [dir="rtl"] .job-input::placeholder { font-size: 1.05rem; }
+  [dir="rtl"] .panel-header { direction: ltr; justify-content: flex-end; font-family: 'Cairo', 'Inter', Tahoma, Arial, sans-serif; font-size: 1.25rem; }
   /* MOBILE FIXES */
   @media (max-width: 480px) {
     .tips-grid { grid-template-columns: 1fr; }
