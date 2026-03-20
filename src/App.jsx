@@ -3,7 +3,7 @@ import * as mammoth from "mammoth";
 import jsPDF from "jspdf";
 
 const STYLES = `
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&family=JetBrains+Mono:wght@400;500&family=Cairo:wght@400;500;600;700&display=swap');
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
     --bg: #f4f4fe; --surface: #ffffff; --surface2: #ebebfa;
@@ -25,8 +25,8 @@ const STYLES = `
   .logo-area h1 span { background: linear-gradient(135deg, var(--accent2) 0%, var(--accent) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
   .logo-area p { color: var(--muted); font-family: 'JetBrains Mono', monospace; font-size: 1rem; margin-top: 8px; letter-spacing: 0.05em; }
   .badge { background: linear-gradient(135deg, var(--accent2) 0%, var(--accent) 100%); color: #fff; font-size: 0.9rem; font-weight: 700; padding: 4px 10px; border-radius: 2px; letter-spacing: 0.1em; text-transform: uppercase; margin-top: 8px; display: inline-block; }
-  .ar { direction: rtl; text-align: right; font-family: 'Inter', Tahoma, Arial, sans-serif; font-weight: 600; }
-  .ar-center { direction: rtl; text-align: center; font-family: 'Inter', Tahoma, Arial, sans-serif; font-weight: 600; }
+  .ar { direction: rtl; text-align: right; font-family: 'Cairo', 'Inter', Tahoma, Arial, sans-serif; font-weight: 600; }
+  .ar-center { direction: rtl; text-align: center; font-family: 'Cairo', 'Inter', Tahoma, Arial, sans-serif; font-weight: 600; }
   .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
   @media (max-width: 700px) { .main-grid { grid-template-columns: 1fr; } }
   .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
