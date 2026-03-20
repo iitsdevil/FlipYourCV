@@ -216,8 +216,6 @@ const STYLES = `
   [dir="rtl"] .upload-zone p { font-size: 1.05rem; }
   [dir="rtl"] .output-empty p { font-size: 1.05rem; }
   [dir="rtl"] .cv-textarea::placeholder, [dir="rtl"] .job-input::placeholder { font-size: 1.05rem; }
-  [dir="rtl"] .panel-header { direction: rtl; justify-content: flex-start; font-family: 'Cairo', 'Inter', Tahoma, Arial, sans-serif; font-size: 1.35rem; font-weight: 700; }
-  [dir="rtl"] .panel-header .step-num { font-size: 1rem; margin-left: 6px; }
   /* MOBILE FIXES */
   @media (max-width: 480px) {
     .tips-grid { grid-template-columns: 1fr; }
@@ -808,7 +806,7 @@ export default function App() {
         <div className="main-grid" style={{ direction: lang === 'ar' ? 'rtl' : 'ltr' }}>
           <div>
             <div className={`panel ${lang === 'ar' ? 'ar' : ''}`}>
-              <div className="panel-header" style={{ flexDirection: lang === 'ar' ? "row-reverse" : "row" }}><span className="num">01</span><h2>{t("step1title")}</h2></div>
+              <div className="panel-header" style={lang === 'ar' ? { direction: 'ltr', justifyContent: 'flex-end', fontFamily: 'Cairo', fontSize: '1.25rem' } : {}}><span className="num" style={lang === 'ar' ? {marginRight: '12px', fontSize: '1rem'} : {}}>01</span><h2>{t("step1title")}</h2></div>
               <div className="panel-body">
                 {!file && !extracting ? (
                   <div className={`upload-zone ${dragging ? "dragging" : ""}`}
@@ -870,7 +868,7 @@ export default function App() {
           </div>
 
           <div className={`panel ${lang === 'ar' ? 'ar' : ''}`}>
-            <div className="panel-header" style={{ flexDirection: lang === 'ar' ? "row-reverse" : "row" }}><span className="num">02</span><h2>{t("step2title")}</h2></div>
+            <div className="panel-header" style={lang === 'ar' ? { direction: 'ltr', justifyContent: 'flex-end', fontFamily: 'Cairo', fontSize: '1.25rem' } : {}}><span className="num" style={lang === 'ar' ? {marginRight: '12px', fontSize: '1rem'} : {}}>02</span><h2>{t("step2title")}</h2></div>
             <div className="panel-body">
               {loading ? (
                 <div className="loading-state"><div className="big-spinner" /><p style={{ direction: "ltr" }}>{loadingMsg}</p></div>
