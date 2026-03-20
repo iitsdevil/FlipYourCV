@@ -32,8 +32,8 @@ const STYLES = `
   @media (max-width: 700px) { .main-grid { grid-template-columns: 1fr; } }
   .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
   .panel-header { display: flex; align-items: center; gap: 10px; padding: 16px 20px; border-bottom: 1px solid var(--border); background: var(--surface2); }
-  .panel-header .num { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--accent); background: rgba(108,99,255,0.12); padding: 2px 8px; border-radius: 2px; }
-  .panel-header h2 { font-size: 0.85rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+  .panel-header .num { font-family: 'JetBrains Mono', monospace; font-size: 1rem; color: var(--accent); background: rgba(108,99,255,0.12); padding: 2px 8px; border-radius: 2px; }
+  .panel-header h2 { font-size: 1.25rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
   .panel-body { padding: 20px; }
   .upload-zone { border: 1.5px dashed var(--border); border-radius: 4px; padding: 48px 24px; text-align: center; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; }
   .upload-zone:hover, .upload-zone.dragging { border-color: var(--accent); background: rgba(108,99,255,0.04); }
@@ -44,21 +44,21 @@ const STYLES = `
   .extract-overlay p { font-size: 0.78rem; color: var(--accent); font-family: 'JetBrains Mono', monospace; letter-spacing: 0.04em; }
   .extract-overlay small { font-size: 0.66rem; color: var(--muted); font-family: 'JetBrains Mono', monospace; animation: pulse 1.4s ease-in-out infinite; }
   .upload-icon { font-size: 2.5rem; margin-bottom: 12px; display: block; }
-  .upload-zone h3 { font-size: 1rem; font-weight: 600; margin-bottom: 6px; }
-  .upload-zone p { font-size: 0.8rem; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+  .upload-zone h3 { font-size: 1.35rem; font-weight: 700; margin-bottom: 6px; }
+  .upload-zone p { font-size: 1.05rem; color: var(--muted); font-family: 'JetBrains Mono', monospace; font-weight: 500; }
   .file-loaded { border: 1px solid rgba(108,99,255,0.35); background: rgba(108,99,255,0.06); border-radius: 4px; padding: 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
   .file-loaded .file-info { flex: 1; min-width: 0; }
   .file-loaded .file-name { font-size: 0.85rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--accent); }
   .file-loaded .file-meta { font-size: 0.7rem; color: var(--muted); font-family: 'JetBrains Mono', monospace; margin-top: 2px; }
   .btn-remove { background: none; border: 1px solid var(--border); color: var(--muted); padding: 4px 10px; cursor: pointer; font-size: 0.75rem; border-radius: 2px; font-family: 'Inter', sans-serif; transition: all 0.2s; white-space: nowrap; }
   .btn-remove:hover { border-color: var(--danger); color: var(--danger); }
-  .cv-textarea { width: 100%; min-height: 220px; background: var(--bg); border: 1px solid var(--border); color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; line-height: 1.6; padding: 14px; border-radius: 4px; resize: vertical; transition: border-color 0.2s; margin-top: 16px; }
+  .cv-textarea { width: 100%; min-height: 220px; background: var(--bg); border: 1px solid var(--border); color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 0.95rem; line-height: 1.6; padding: 14px; border-radius: 4px; resize: vertical; transition: border-color 0.2s; margin-top: 16px; }
   .cv-textarea:focus { outline: none; border-color: var(--accent); }
-  .cv-textarea::placeholder { color: var(--muted); }
+  .cv-textarea::placeholder { color: var(--muted); font-size: 1.05rem; }
   .field-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; margin-top: 16px; display: block; }
   .job-input { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); font-family: 'Inter', sans-serif; font-size: 0.9rem; padding: 10px 14px; border-radius: 4px; transition: border-color 0.2s; }
   .job-input:focus { outline: none; border-color: var(--accent); }
-  .job-input::placeholder { color: var(--muted); }
+  .job-input::placeholder { color: var(--muted); font-size: 1.05rem; }
   .btn-convert { width: 100%; margin-top: 20px; padding: 14px; background: linear-gradient(135deg, var(--accent2) 0%, var(--accent) 100%); color: #fff; border: none; font-family: 'Inter', sans-serif; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; border-radius: 4px; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
   .btn-convert:hover:not(:disabled) { filter: brightness(1.1); transform: translateY(-1px); box-shadow: 0 4px 20px rgba(108,99,255,0.4); }
   .btn-convert:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
@@ -67,7 +67,7 @@ const STYLES = `
   .output-empty { min-height: 380px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: var(--muted); text-align: center; }
   .output-empty .arrow { font-size: 2rem; animation: float 2s ease-in-out infinite; }
   @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
-  .output-empty p { font-size: 0.8rem; font-family: 'JetBrains Mono', monospace; }
+  .output-empty p { font-size: 1.05rem; font-family: 'JetBrains Mono', monospace; font-weight: 500; }
   .output-actions { display: flex; gap: 10px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); flex-wrap: wrap; }
   .btn-action { flex: 1; min-width: 100px; padding: 10px; background: none; border: 1px solid var(--border); color: var(--text); font-family: 'Inter', sans-serif; font-size: 0.78rem; font-weight: 600; cursor: pointer; border-radius: 4px; transition: all 0.2s; letter-spacing: 0.05em; }
   .btn-action:hover { border-color: var(--accent); color: var(--accent); }
@@ -117,8 +117,8 @@ const STYLES = `
   .tip-item { display: flex; gap: 8px; padding: 8px 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; margin-bottom: 6px; font-size: 0.75rem; color: var(--muted); font-family: 'JetBrains Mono', monospace; line-height: 1.5; }
   .tip-item::before { content: '→'; color: var(--accent); flex-shrink: 0; }
   .tips-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 16px; }
-  .tip { background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; padding: 12px; font-size: 0.72rem; color: var(--muted); font-family: 'JetBrains Mono', monospace; line-height: 1.5; }
-  .tip strong { color: var(--text); display: block; margin-bottom: 2px; font-size: 0.75rem; }
+  .tip { background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; padding: 12px; font-size: 0.9rem; font-weight: 500; color: var(--muted); font-family: 'JetBrains Mono', monospace; line-height: 1.5; }
+  .tip strong { color: var(--text); display: block; margin-bottom: 2px; font-size: 1rem; font-weight: 700; }
   .tips-grid.ar .tip { font-family: 'Cairo', 'Inter', Tahoma, Arial, sans-serif; font-size: 0.9rem; font-weight: 500; }
   .tips-grid.ar .tip strong { font-size: 1rem; font-weight: 700; }
   .loading-state { min-height: 380px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; }
@@ -134,7 +134,7 @@ const STYLES = `
   .contact-label { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
   .contact h2 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(1.6rem, 4vw, 2.4rem); letter-spacing: -0.5px; margin-bottom: 10px; }
   .contact h2 span { color: var(--accent); }
-  .contact p { font-size: 0.85rem; color: var(--muted); font-family: 'JetBrains Mono', monospace; max-width: 480px; margin: 0 auto 32px; line-height: 1.7; }
+  .contact p { font-size: 1.15rem; color: var(--muted); font-family: 'JetBrains Mono', monospace; font-weight: 500; max-width: 480px; margin: 0 auto 32px; line-height: 1.7; }
   .contact-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; }
   .contact-link { display: flex; align-items: center; gap: 8px; padding: 10px 20px; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; text-decoration: none; transition: all 0.2s; }
   .contact-link:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
@@ -175,7 +175,7 @@ const STYLES = `
   .hero-tagline::before { content: ''; display: inline-block; width: 24px; height: 1px; background: var(--accent); }
   .hero h2 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(2.2rem, 5.5vw, 3.8rem); line-height: 1.06; letter-spacing: -1.5px; margin-bottom: 16px; }
   .hero h2 span { background: linear-gradient(135deg, var(--accent2) 0%, var(--accent) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-  .hero-sub { font-size: 0.88rem; color: var(--muted); font-family: 'JetBrains Mono', monospace; line-height: 1.75; max-width: 500px; margin-bottom: 30px; }
+  .hero-sub { font-size: 1.15rem; font-weight: 500; color: var(--muted); font-family: 'JetBrains Mono', monospace; line-height: 1.75; max-width: 500px; margin-bottom: 30px; }
   .hero-sub.ar { font-size: 1.15rem; font-family: 'Cairo', 'Inter', Tahoma, Arial, sans-serif; font-weight: 500; }
   .hero-stats { display: flex; gap: 32px; flex-wrap: wrap; }
   .hero-stat .num { font-family: 'Space Grotesk', sans-serif; font-size: 1.9rem; color: var(--accent); display: block; line-height: 1; }
@@ -184,14 +184,14 @@ const STYLES = `
   .how-strip { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; margin-bottom: 20px; }
   .how-step { background: var(--surface); padding: 20px; display: flex; align-items: flex-start; gap: 14px; }
   .how-num { font-family: 'Space Grotesk', sans-serif; font-size: 2rem; color: var(--accent); opacity: 0.35; line-height: 1; flex-shrink: 0; }
-  .how-text h4 { font-size: 0.82rem; font-weight: 700; margin-bottom: 4px; letter-spacing: 0.03em; }
-  .how-text p { font-size: 0.72rem; color: var(--muted); font-family: 'JetBrains Mono', monospace; line-height: 1.55; }
+  .how-text h4 { font-size: 1.1rem; font-weight: 700; margin-bottom: 4px; letter-spacing: 0.03em; }
+  .how-text p { font-size: 0.95rem; font-weight: 500; color: var(--muted); font-family: 'JetBrains Mono', monospace; line-height: 1.55; }
   .how-strip.ar .how-text h4 { font-family: 'Cairo', 'Inter', Tahoma, Arial, sans-serif; font-size: 1.1rem; }
   .how-strip.ar .how-text p { font-family: 'Cairo', 'Inter', Tahoma, Arial, sans-serif; font-size: 0.95rem; font-weight: 500; }
   @media (max-width: 600px) { .how-strip { grid-template-columns: 1fr; } }
   /* TRUST BADGES */
   .trust-badges { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 32px; }
-  .trust-badge { display: flex; align-items: center; gap: 5px; padding: 5px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 100px; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted); }
+  .trust-badge { display: flex; align-items: center; gap: 5px; padding: 5px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 100px; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; font-weight: 500; color: var(--muted); }
   .trust-badges.ar .trust-badge { font-family: 'Cairo', 'Inter', Tahoma, Arial, sans-serif; font-size: 0.85rem; font-weight: 500; }
   .trust-badge .check { color: var(--accent); }
   /* TESTIMONIALS */
@@ -755,7 +755,7 @@ export default function App() {
 
           <div className="logo-area header-center">
             <h1><span style={{ color: "var(--accent)" }}>FixYourCV</span></h1>
-            <span className={`badge ${lang === 'ar' ? 'ar' : ''}`} style={{ marginTop: 12, fontSize: lang === 'ar' ? '1rem' : '0.9rem' }}>{t("navSubtitle")}</span>
+            <span className={`badge ${lang === 'ar' ? 'ar' : ''}`} style={{ marginTop: 12, fontSize: '1rem' }}>{t("navSubtitle")}</span>
           </div>
 
           <div className="header-right">
@@ -806,7 +806,7 @@ export default function App() {
         <div className="main-grid" style={{ direction: lang === 'ar' ? 'rtl' : 'ltr' }}>
           <div>
             <div className={`panel ${lang === 'ar' ? 'ar' : ''}`}>
-              <div className="panel-header" style={lang === 'ar' ? { direction: 'ltr', justifyContent: 'flex-end', fontFamily: 'Cairo', fontSize: '1.25rem' } : {}}><span className="num" style={lang === 'ar' ? {marginRight: '12px', fontSize: '1rem'} : {}}>01</span><h2>{t("step1title")}</h2></div>
+              <div className="panel-header" style={lang === 'ar' ? { direction: 'ltr', justifyContent: 'flex-end', fontFamily: 'Cairo' } : {}}><span className="num" style={lang === 'ar' ? {marginRight: '12px'} : {}}>01</span><h2>{t("step1title")}</h2></div>
               <div className="panel-body">
                 {!file && !extracting ? (
                   <div className={`upload-zone ${dragging ? "dragging" : ""}`}
@@ -868,7 +868,7 @@ export default function App() {
           </div>
 
           <div className={`panel ${lang === 'ar' ? 'ar' : ''}`}>
-            <div className="panel-header" style={lang === 'ar' ? { direction: 'ltr', justifyContent: 'flex-end', fontFamily: 'Cairo', fontSize: '1.25rem' } : {}}><span className="num" style={lang === 'ar' ? {marginRight: '12px', fontSize: '1rem'} : {}}>02</span><h2>{t("step2title")}</h2></div>
+            <div className="panel-header" style={lang === 'ar' ? { direction: 'ltr', justifyContent: 'flex-end', fontFamily: 'Cairo' } : {}}><span className="num" style={lang === 'ar' ? {marginRight: '12px'} : {}}>02</span><h2>{t("step2title")}</h2></div>
             <div className="panel-body">
               {loading ? (
                 <div className="loading-state"><div className="big-spinner" /><p style={{ direction: "ltr" }}>{loadingMsg}</p></div>
