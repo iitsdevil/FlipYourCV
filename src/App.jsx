@@ -733,7 +733,7 @@ export default function App() {
       <style>{STYLES}</style>
       <ToastContainer toasts={toasts} onDismiss={dismissToast} />
       <div className="app" dir={lang === 'ar' ? 'rtl' : 'ltr'}>
-        <div className="header">
+        <div className="header" style={{ direction: "ltr" }}>
           <div className="header-left"></div>
 
           <div className="logo-area header-center">
