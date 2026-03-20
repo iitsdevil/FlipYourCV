@@ -12,7 +12,15 @@ const STYLES = `
   }
   body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; }
   .app { max-width: 1100px; margin: 0 auto; padding: 40px 24px 80px; }
-  .header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 56px; padding-bottom: 32px; border-bottom: 1px solid var(--border); }
+  .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 56px; padding-bottom: 32px; border-bottom: 1px solid var(--border); }
+  .header-left, .header-right { flex: 1; }
+  .header-right { display: flex; gap: 10px; justify-content: flex-end; }
+  .header-center { display: flex; flex-direction: column; align-items: center; text-align: center; }
+  @media (max-width: 700px) {
+    .header { flex-direction: column-reverse; gap: 24px; }
+    .header-right { justify-content: center; }
+    .header-left { display: none; }
+  }
   .logo-area h1 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(2rem, 5vw, 3.2rem); line-height: 1.05; letter-spacing: -1px; }
   .logo-area h1 span { background: linear-gradient(135deg, var(--accent2) 0%, var(--accent) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
   .logo-area p { color: var(--muted); font-family: 'JetBrains Mono', monospace; font-size: 1rem; margin-top: 8px; letter-spacing: 0.05em; }
@@ -725,17 +733,16 @@ export default function App() {
       <style>{STYLES}</style>
       <ToastContainer toasts={toasts} onDismiss={dismissToast} />
       <div className="app" dir={lang === 'ar' ? 'rtl' : 'ltr'}>
-        <div className="header" style={{ position: "relative", justifyContent: "space-between", alignItems: "flex-start" }}>
-          <div className="left-actions" style={{ zIndex: 10, marginTop: "8px" }}>
-            <span className="badge">{t("heroBadge")}</span>
-          </div>
+        <div className="header">
+          <div className="header-left"></div>
           
-          <div className="logo-area" style={{ position: "absolute", left: "50%", transform: "translateX(-50%)", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
+          <div className="logo-area header-center">
             <h1>Fix<span style={{ color: "var(--primary)" }}>Your</span>CV</h1>
             <p className={lang === 'ar' ? "ar" : ""} style={{ marginTop: 10, fontSize: "0.95rem" }}>{t("navSubtitle")}</p>
+            <span className="badge">{t("heroBadge")}</span>
           </div>
 
-          <div className="right-actions" style={{ display: "flex", gap: "10px", zIndex: 10, marginTop: "8px" }}>
+          <div className="header-right">
             <button className="theme-btn" style={{ fontSize: "14px", fontWeight: "bold" }} onClick={() => setLang(l => l === "en" ? "ar" : "en")} aria-label="Toggle language">
               {lang === "en" ? "عربي" : "EN"}
             </button>
