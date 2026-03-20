@@ -5,11 +5,8 @@
 // ─── CORS Configuration ──────────────────────────────────────────────────────
 // Add your production domain here when you deploy
 const ALLOWED_ORIGINS = [
-  "http://localhost:5173",
-  "http://localhost:4173",
-  "http://localhost:3000",
-  // "https://yourdomain.com",      // ← Add your production domain
-  // "https://www.yourdomain.com",
+  "https://fixyourcv.vercel.app",
+  "https://www.fixyourcv.vercel.app",
 ];
 
 function setCorsHeaders(req, res) {
@@ -154,7 +151,7 @@ export default async function handler(req, res) {
   // ── Turnstile CAPTCHA verification ─────────────────────────────────────────
   // ⚠️ Set TURNSTILE_SECRET_KEY in Vercel → Settings → Environment Variables
   // Get it from: https://dash.cloudflare.com → Turnstile → Your Site → Settings
-  const turnstileSecret = process.env.TURNSTILE_SECRET_KEY || "1x0000000000000000000000000000000AA"; // Test key (always passes)
+  const turnstileSecret = process.env.TURNSTILE_SECRET_KEY || "0x4AAAAAACtiYrndepol3xuQRxaBZP4itAY";
   if (!turnstileToken) {
     return res.status(400).json({ error: "CAPTCHA verification required." });
   }
