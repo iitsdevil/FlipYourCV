@@ -25,8 +25,8 @@ const STYLES = `
   .logo-area h1 span { background: linear-gradient(135deg, var(--accent2) 0%, var(--accent) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
   .logo-area p { color: var(--muted); font-family: 'JetBrains Mono', monospace; font-size: 1rem; margin-top: 8px; letter-spacing: 0.05em; }
   .badge { background: linear-gradient(135deg, var(--accent2) 0%, var(--accent) 100%); color: #fff; font-size: 0.9rem; font-weight: 700; padding: 4px 10px; border-radius: 2px; letter-spacing: 0.1em; text-transform: uppercase; margin-top: 8px; display: inline-block; }
-  .ar { direction: rtl; text-align: right; font-family: 'Inter', Tahoma, Arial, sans-serif; }
-  .ar-center { direction: rtl; text-align: center; font-family: 'Inter', Tahoma, Arial, sans-serif; }
+  .ar { direction: rtl; text-align: right; font-family: 'Inter', Tahoma, Arial, sans-serif; font-weight: 600; }
+  .ar-center { direction: rtl; text-align: center; font-family: 'Inter', Tahoma, Arial, sans-serif; font-weight: 600; }
   .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
   @media (max-width: 700px) { .main-grid { grid-template-columns: 1fr; } }
   .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
@@ -756,7 +756,7 @@ export default function App() {
         <div className={`hero ${lang === 'ar' ? 'ar-center' : ''}`} style={{ textAlign: "center" }}>
           <div className="hero-tagline" style={{ justifyContent: "center" }}><span style={{ direction: "ltr" }}>AI-Powered Resume Optimizer</span></div>
           <h2>{t("heroTitle1")}<br /><span>{t("heroTitle2")}</span></h2>
-          <p className="hero-sub" style={{ margin: "0 auto 30px" }}>{t("heroSub")}</p>
+          <p className={`hero-sub ${lang === 'ar' ? 'ar' : ''}`} style={{ margin: "0 auto 30px" }}>{t("heroSub")}</p>
           <div className="hero-stats" style={{ justifyContent: "center", direction: lang === 'ar' ? 'rtl' : 'ltr' }}>
             <div className="hero-stat"><span className="num" style={{ direction: "ltr" }}>10K+</span><span className={`label ${lang === 'ar' ? 'ar' : ''}`}>{t("stat1Lbl")}</span></div>
             <div className="hero-stat"><span className="num" style={{ direction: "ltr" }}>91%</span><span className={`label ${lang === 'ar' ? 'ar' : ''}`}>{t("stat2Lbl")}</span></div>
