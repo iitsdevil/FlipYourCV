@@ -621,7 +621,9 @@ export default function App() {
   const [displayScore, setDisplayScore] = useState(0);
   const [theme, setTheme] = useState("light");
   const [copied, setCopied] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState("");
   const fileInputRef = useRef();
+  const turnstileRef = useRef();
 
   // Sync theme with <html> attribute
   useEffect(() => {
@@ -646,6 +648,20 @@ export default function App() {
   useEffect(() => {
     try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch (_) { }
   }, []);
+
+  // Render Cloudflare Turnstile CAPTCHA widget
+  useEffect(() => {
+    if (!window.turnstile || !turnstileRef.current) return;
+    // Clear any previous widget
+    turnstileRef.current.innerHTML = "";
+    window.turnstile.render(turnstileRef.current, {
+      // ⚠️ REPLACE with your real site key from: https://dash.cloudflare.com → Turnstile
+      sitekey: "1x00000000000000000000AA",  // This is a test key that always passes
+      callback: (token) => setTurnstileToken(token),
+      "expired-callback": () => setTurnstileToken(""),
+      theme: theme === "dark" ? "dark" : "light",
+    });
+  }, [theme]);
 
   const showToast = (message, type = "error") => {
     const id = Date.now() + Math.random();
@@ -700,6 +716,7 @@ export default function App() {
   const convert = async () => {
     const cvContent = rawText.trim();
     if (!cvContent) { showToast("Please upload a CV or paste your CV text."); return; }
+    if (!turnstileToken) { showToast("Please complete the security check."); return; }
     setLoading(true); setResult(null);
     let msgIdx = 0;
     setLoadingMsg(LOADING_MESSAGES[0]);
@@ -708,7 +725,7 @@ export default function App() {
       const response = await fetch("/api/convert", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ cvText: cvContent, jobTitle }),
+        body: JSON.stringify({ cvText: cvContent, jobTitle, turnstileToken }),
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Something went wrong");
@@ -718,6 +735,17 @@ export default function App() {
     } finally {
       clearInterval(interval);
       setLoading(false);
+      // Reset turnstile after each attempt
+      setTurnstileToken("");
+      if (window.turnstile && turnstileRef.current) {
+        turnstileRef.current.innerHTML = "";
+        window.turnstile.render(turnstileRef.current, {
+          sitekey: "1x00000000000000000000AA",
+          callback: (token) => setTurnstileToken(token),
+          "expired-callback": () => setTurnstileToken(""),
+          theme: theme === "dark" ? "dark" : "light",
+        });
+      }
     }
   };
 
@@ -839,11 +867,15 @@ export default function App() {
                     <button className="btn-remove" onClick={reset}>{t("remove")}</button>
                   </div>
                 )}
-                <textarea className={`cv-textarea ${lang === 'ar' ? 'ar' : ''}`} placeholder={t("paste")} value={rawText} onChange={(e) => setRawText(e.target.value)} rows={8} />
+                <textarea className={`cv-textarea ${lang === 'ar' ? 'ar' : ''}`} placeholder={t("paste")} value={rawText} onChange={(e) => setRawText(e.target.value)} rows={8} maxLength={20000} />
+                <div style={{ textAlign: lang === 'ar' ? 'left' : 'right', fontSize: '0.68rem', fontFamily: "'JetBrains Mono', monospace", color: rawText.length > 18000 ? 'var(--danger)' : 'var(--muted)', marginTop: 4, opacity: rawText.length > 0 ? 1 : 0 }}>
+                  {rawText.length.toLocaleString()} / 20,000
+                </div>
                 <span className={`field-label ${lang === 'ar' ? 'ar' : ''}`}>{t("jobLabel")}</span>
-                <input className={`job-input ${lang === 'ar' ? 'ar' : ''}`} placeholder={t("jobPh")} value={jobTitle} onChange={(e) => setJobTitle(e.target.value)} />
+                <input className={`job-input ${lang === 'ar' ? 'ar' : ''}`} placeholder={t("jobPh")} value={jobTitle} onChange={(e) => setJobTitle(e.target.value)} maxLength={200} />
 
-                <button className="btn-convert" style={{ flexDirection: lang === 'ar' ? "row-reverse" : "row" }} onClick={convert} disabled={loading || !rawText.trim()}>
+                <div ref={turnstileRef} style={{ margin: '12px 0', display: 'flex', justifyContent: 'center' }}></div>
+                <button className="btn-convert" style={{ flexDirection: lang === 'ar' ? "row-reverse" : "row" }} onClick={convert} disabled={loading || !rawText.trim() || !turnstileToken}>
                   {loading ? <><div className="spinner" /> {t("converting")}</> : <>{lang === 'ar' ? '←' : ''} {t("convert")} {lang === 'en' ? '→' : ''}</>}
                 </button>
               </div>
