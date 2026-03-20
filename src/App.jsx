@@ -216,7 +216,8 @@ const STYLES = `
   [dir="rtl"] .upload-zone p { font-size: 1.05rem; }
   [dir="rtl"] .output-empty p { font-size: 1.05rem; }
   [dir="rtl"] .cv-textarea::placeholder, [dir="rtl"] .job-input::placeholder { font-size: 1.05rem; }
-  [dir="rtl"] .panel-header { direction: ltr; justify-content: flex-end; font-family: 'Cairo', 'Inter', Tahoma, Arial, sans-serif; font-size: 1.25rem; }
+  [dir="rtl"] .panel-header { direction: rtl; justify-content: flex-start; font-family: 'Cairo', 'Inter', Tahoma, Arial, sans-serif; font-size: 1.35rem; font-weight: 700; }
+  [dir="rtl"] .panel-header .step-num { font-size: 1rem; margin-left: 6px; }
   /* MOBILE FIXES */
   @media (max-width: 480px) {
     .tips-grid { grid-template-columns: 1fr; }
