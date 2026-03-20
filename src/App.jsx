@@ -918,12 +918,6 @@ export default function App() {
             <a className="contact-link" href="mailto:your@email.com" style={{ direction: "ltr" }}>
               <span className="icon">✉</span> your@email.com
             </a>
-            <a className="contact-link" href="https://twitter.com/yourhandle" target="_blank" rel="noopener noreferrer" style={{ direction: "ltr" }}>
-              <span className="icon">𝕏</span> @yourhandle
-            </a>
-            <a className="contact-link" href="https://github.com/yourusername" target="_blank" rel="noopener noreferrer" style={{ direction: "ltr" }}>
-              <span className="icon">⌥</span> github/yourusername
-            </a>
           </div>
         </div>
         {/* ───────────────────────────────────────────── */}
