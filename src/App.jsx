@@ -655,7 +655,7 @@ export default function App() {
     // Clear any previous widget
     turnstileRef.current.innerHTML = "";
     window.turnstile.render(turnstileRef.current, {
-      sitekey: "0x4AAAAAACtiYrndepol3xuQRxaBZP4itAY",
+      sitekey: "0x4AAAAAACtiYlNeMBElx1HD",
       callback: (token) => setTurnstileToken(token),
       "expired-callback": () => setTurnstileToken(""),
       theme: theme === "dark" ? "dark" : "light",
@@ -739,7 +739,7 @@ export default function App() {
       if (window.turnstile && turnstileRef.current) {
         turnstileRef.current.innerHTML = "";
         window.turnstile.render(turnstileRef.current, {
-          sitekey: "0x4AAAAAACtiYrndepol3xuQRxaBZP4itAY",
+          sitekey: "0x4AAAAAACtiYlNeMBElx1HD",
           callback: (token) => setTurnstileToken(token),
           "expired-callback": () => setTurnstileToken(""),
           theme: theme === "dark" ? "dark" : "light",
