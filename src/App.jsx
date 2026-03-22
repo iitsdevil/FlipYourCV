@@ -1057,7 +1057,10 @@ export default function App() {
           </div>
         </div>
         {/* ───────────────────────────────────────────── */}
-        <div className={`footer ${lang === 'ar' ? 'ar-center' : ''}`} style={{ direction: "ltr", textAlign: "center" }}>{t("footerText")}</div>
+        <div className={`footer ${lang === 'ar' ? 'ar-center' : ''}`} style={{ direction: "ltr", textAlign: "center" }}>
+          <div>{t("footerText")}</div>
+          <div style={{ marginTop: 4, opacity: 0.7 }}>Made by Atlas</div>
+        </div>
       </div>
     </>
   );
