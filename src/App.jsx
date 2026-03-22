@@ -763,11 +763,21 @@ export default function App() {
     setLoadingMsg(LOADING_MESSAGES[0]);
     const interval = setInterval(() => { msgIdx = (msgIdx + 1) % LOADING_MESSAGES.length; setLoadingMsg(LOADING_MESSAGES[msgIdx]); }, 2000);
     try {
+      const timestamp = Date.now().toString();
+      const payloadString = cvContent + jobTitle + timestamp;
+      const encoder = new TextEncoder();
+      const encodedPayload = encoder.encode(payloadString);
+      const hashBuffer = await crypto.subtle.digest("SHA-256", encodedPayload);
+      const signature = Array.from(new Uint8Array(hashBuffer))
+        .map(b => b.toString(16).padStart(2, "0"))
+        .join("");
+
       const response = await fetch("/api/convert", {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
-          "x-app-origin": "flipyourcv"
+          "x-app-timestamp": timestamp,
+          "x-app-signature": signature
         },
         body: JSON.stringify({ cvText: cvContent, jobTitle, turnstileToken }),
       });

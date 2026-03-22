@@ -1,4 +1,5 @@
 import { Redis } from "@upstash/redis";
+import crypto from "crypto";
 
 // ─── CORS Configuration ──────────────────────────────────────────────────────
 // Add your production domain here when you deploy
@@ -148,10 +149,28 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  // ── Strict Origin Enforcement ──────────────────────────────────────────────
-  const appOrigin = req.headers["x-app-origin"];
-  if (appOrigin !== "flipyourcv") {
-    return res.status(403).json({ error: "Unauthorized request origin." });
+  // ── Dynamic Signature Enforcement (Anti-Replay) ──────────────────────────
+  const appTimestamp = req.headers["x-app-timestamp"];
+  const appSignature = req.headers["x-app-signature"];
+
+  if (!appTimestamp || !appSignature) {
+    return res.status(403).json({ error: "Missing required security signatures." });
+  }
+
+  // Prevent replay attacks (valid for 60 seconds)
+  if (Math.abs(Date.now() - parseInt(appTimestamp)) > 60000) {
+    return res.status(403).json({ error: "Request expired. Please refresh and try again." });
+  }
+
+  const cvTextBody = req.body?.cvText || "";
+  const jobTitleBody = req.body?.jobTitle || "";
+  const expectedSignature = crypto
+    .createHash('sha256')
+    .update(cvTextBody + jobTitleBody + appTimestamp)
+    .digest('hex');
+
+  if (appSignature !== expectedSignature) {
+    return res.status(403).json({ error: "Invalid request payload signature." });
   }
 
   // ── Early DoS Payload Check ────────────────────────────────────────────────
