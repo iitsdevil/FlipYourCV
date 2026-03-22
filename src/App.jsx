@@ -1051,13 +1051,13 @@ export default function App() {
           <h2>{lang === 'ar' ? 'دعنا' : 'Get in'} <span>{lang === 'ar' ? 'نتواصل' : 'touch'}</span></h2>
           <p>{lang === 'ar' ? 'هل لديك سؤال، اقتراح، أو تريد فقط إلقاء التحية؟ لا تتردد في التواصل معي — يسعدني سماع رأيك.' : 'Have a question, feedback, or just want to say hi? Feel free to reach out — I\'d love to hear from you.'}</p>
           <div className="contact-links" style={{ justifyContent: "center", flexDirection: lang === 'ar' ? "row-reverse" : "row" }}>
-            <a className="contact-link" href="mailto:info@flipyourcv.tech" style={{ direction: "ltr" }}>
+            <a className="contact-link" href="mailto:info@flipyourcv.tech" style={{ direction: "ltr", fontWeight: "normal", fontFamily: "'JetBrains Mono', monospace" }}>
               <span className="icon">✉</span> info@flipyourcv.tech
             </a>
           </div>
         </div>
         {/* ───────────────────────────────────────────── */}
-        <div className={`footer ${lang === 'ar' ? 'ar-center' : ''}`} style={{ direction: "ltr", textAlign: "center" }}>
+        <div className="footer" style={{ direction: "ltr", textAlign: "center" }}>
           <div>{t("footerText")}</div>
           <div style={{ marginTop: 4, opacity: 0.7 }}>Made by Atlas</div>
         </div>
