@@ -5,8 +5,6 @@ import { Redis } from "@upstash/redis";
 const ALLOWED_ORIGINS = [
   "https://flipyourcv.tech",
   "https://www.flipyourcv.tech",
-  "https://fixyourcv.vercel.app",
-  "https://www.fixyourcv.vercel.app",
 ];
 
 function setCorsHeaders(req, res) {
@@ -168,7 +166,7 @@ export default async function handler(req, res) {
     req.headers["x-real-ip"] ||
     req.socket?.remoteAddress ||
     "unknown";
-    
+
   if (await isRateLimited(clientIp)) {
     return res.status(429).json({
       error: `Too many requests. Please wait a minute and try again.`,
