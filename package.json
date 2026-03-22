@@ -8,9 +8,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@upstash/redis": "^1.28.4",
     "jspdf": "^2.5.1",
     "mammoth": "^1.6.0",
-    "pdfjs-dist": "^3.11.174",
+    "pdfjs-dist": "^4.3.136",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },

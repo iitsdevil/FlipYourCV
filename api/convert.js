@@ -1,6 +1,4 @@
-// api/convert.js
-// Vercel Serverless Function — uses Groq (FREE)
-// Get your free key at: https://console.groq.com
+import { Redis } from "@upstash/redis";
 
 // ─── CORS Configuration ──────────────────────────────────────────────────────
 // Add your production domain here when you deploy
@@ -17,21 +15,47 @@ function setCorsHeaders(req, res) {
     res.setHeader("Access-Control-Allow-Origin", origin);
   }
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, x-app-origin");
 }
 // ─────────────────────────────────────────────────────────────────────────────
 
 // ─── Improved rate limiter with sliding window + auto-cleanup ────────────────
 const RATE_LIMIT = 10;          // max requests
 const RATE_WINDOW_MS = 60_000;  // per minute
-const CLEANUP_INTERVAL_MS = 5 * 60_000; // clean stale entries every 5 min
+
+// Redis Initialization with Graceful Fallback
+let redis = null;
+if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
+  try {
+    redis = new Redis({
+      url: process.env.UPSTASH_REDIS_REST_URL,
+      token: process.env.UPSTASH_REDIS_REST_TOKEN,
+    });
+  } catch (e) {
+    console.error("Redis initialization failed, falling back to local map", e);
+  }
+}
+
 const rateMap = new Map();      // { ip -> { count, windowStart } }
+const CLEANUP_INTERVAL_MS = 5 * 60_000; // clean stale entries every 5 min
 let lastCleanup = Date.now();
 
-function isRateLimited(ip) {
-  const now = Date.now();
+async function isRateLimited(ip) {
+  if (redis) {
+    try {
+      const key = `rate_limit:${ip}`;
+      const count = await redis.incr(key);
+      if (count === 1) {
+        await redis.expire(key, RATE_WINDOW_MS / 1000);
+      }
+      return count > RATE_LIMIT;
+    } catch (e) {
+      console.error("Redis error, falling back to local map", e);
+    }
+  }
 
-  // Periodic cleanup of stale entries to prevent memory leak
+  // Fallback local memory map
+  const now = Date.now();
   if (now - lastCleanup > CLEANUP_INTERVAL_MS) {
     for (const [key, entry] of rateMap) {
       if (now - entry.windowStart > RATE_WINDOW_MS) {
@@ -40,7 +64,6 @@ function isRateLimited(ip) {
     }
     lastCleanup = now;
   }
-
   const entry = rateMap.get(ip);
   if (!entry || now - entry.windowStart > RATE_WINDOW_MS) {
     rateMap.set(ip, { count: 1, windowStart: now });
@@ -59,6 +82,8 @@ function sanitizeInput(text, maxLength = 20000) {
     .slice(0, maxLength)
     // Remove null bytes and other control characters (keep newlines, tabs)
     .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "")
+    // Remove prompt injection vectors (XML evasion)
+    .replace(/<\/?user_cv[^>]*>/gi, "")
     .trim();
 }
 // ─────────────────────────────────────────────────────────────────────────────
@@ -125,12 +150,26 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
+  // ── Strict Origin Enforcement ──────────────────────────────────────────────
+  const appOrigin = req.headers["x-app-origin"];
+  if (appOrigin !== "flipyourcv") {
+    return res.status(403).json({ error: "Unauthorized request origin." });
+  }
+
+  // ── Early DoS Payload Check ────────────────────────────────────────────────
+  if (req.body?.cvText && req.body.cvText.length > 20000) {
+    return res.status(400).json({ error: "CV text is too long (max 20,000 characters)" });
+  }
+
   // ── Rate limiting ───────────────────────────────────────────────────────────
+  // Prioritize Vercel immutable headers
   const clientIp =
-    req.headers["x-forwarded-for"]?.split(",")[0].trim() ||
+    req.headers["x-vercel-forwarded-for"]?.split(",")[0].trim() ||
+    req.headers["x-real-ip"] ||
     req.socket?.remoteAddress ||
     "unknown";
-  if (isRateLimited(clientIp)) {
+    
+  if (await isRateLimited(clientIp)) {
     return res.status(429).json({
       error: `Too many requests. Please wait a minute and try again.`,
     });
@@ -139,15 +178,13 @@ export default async function handler(req, res) {
 
   // ── Input validation & sanitization ────────────────────────────────────────
   const cvText = sanitizeInput(req.body?.cvText, 20000);
-  const jobTitle = sanitizeInput(req.body?.jobTitle, 200);
+  const jobTitleRaw = req.body?.jobTitle || "";
+  // Strip dangerous characters from job title, including newlines
+  const jobTitle = sanitizeInput(jobTitleRaw, 200).replace(/[<>\n\r]/g, "");
   const turnstileToken = req.body?.turnstileToken;
 
   if (!cvText || cvText.length === 0) {
     return res.status(400).json({ error: "CV text is required" });
-  }
-
-  if (cvText.length > 20000) {
-    return res.status(400).json({ error: "CV text is too long (max 20,000 characters)" });
   }
 
   // ── Turnstile CAPTCHA verification ─────────────────────────────────────────
@@ -168,19 +205,20 @@ export default async function handler(req, res) {
       }),
     });
     const turnstileData = await turnstileRes.json();
-    if (!turnstileData.success) {
+    if (!turnstileData.success || turnstileData.action !== "cv_conversion") {
       console.error("Turnstile verification failed:", turnstileData);
       return res.status(403).json({ error: "Security check failed. Please try again." });
     }
   } catch (e) {
     console.error("Turnstile verification error:", e);
-    // Don't block users if Turnstile is down — graceful degradation
+    // Fail closed to prevent bypass
+    return res.status(503).json({ error: "Security check service unavailable. Please try again later." });
   }
   // ───────────────────────────────────────────────────────────────────────────
 
   // ── Build prompt with XML delimiters to resist prompt injection ─────────
   const prompt = `You are an expert ATS (Applicant Tracking System) CV optimizer.
-${jobTitle ? `The target job role is: "${jobTitle}"` : ""}
+${jobTitle ? `The target job role is: <job_title>${jobTitle}</job_title>` : ""}
 
 Analyze the CV below and return ONLY a valid JSON object (no markdown, no explanation, just raw JSON) in this exact structure:
 

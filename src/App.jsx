@@ -697,6 +697,7 @@ export default function App() {
     turnstileRef.current.innerHTML = "";
     window.turnstile.render(turnstileRef.current, {
       sitekey: "0x4AAAAAACtiYlNeMBElx1HD",
+      action: "cv_conversion",
       callback: (token) => setTurnstileToken(token),
       "expired-callback": () => setTurnstileToken(""),
       theme: theme === "dark" ? "dark" : "light",
@@ -764,7 +765,10 @@ export default function App() {
     try {
       const response = await fetch("/api/convert", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "x-app-origin": "flipyourcv"
+        },
         body: JSON.stringify({ cvText: cvContent, jobTitle, turnstileToken }),
       });
       const data = await response.json();
@@ -781,6 +785,7 @@ export default function App() {
         turnstileRef.current.innerHTML = "";
         window.turnstile.render(turnstileRef.current, {
           sitekey: "0x4AAAAAACtiYlNeMBElx1HD",
+          action: "cv_conversion",
           callback: (token) => setTurnstileToken(token),
           "expired-callback": () => setTurnstileToken(""),
           theme: theme === "dark" ? "dark" : "light",
