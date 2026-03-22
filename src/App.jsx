@@ -129,6 +129,17 @@ const STYLES = `
   /* AD SLOT */
   .ad-slot { margin-top: 48px; margin-bottom: 8px; width: 100%; }
   .ad-placeholder { width: 100%; min-height: 90px; border: 1.5px dashed var(--border); border-radius: 4px; display: flex; align-items: center; justify-content: center; background: var(--surface); color: var(--muted); font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.5; }
+  /* PUB CONTENT */
+  .pub-content { margin-top: 64px; border-top: 1px solid var(--border); padding-top: 48px; }
+  .pub-section { margin-bottom: 40px; }
+  .pub-section h2 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(1.6rem, 4vw, 2.2rem); margin-bottom: 16px; color: var(--text); }
+  .pub-section h3 { font-family: 'Inter', sans-serif; font-size: 1.25rem; font-weight: 700; margin-top: 24px; margin-bottom: 8px; color: var(--text); }
+  .pub-section p { font-size: 1.05rem; color: var(--muted); line-height: 1.75; margin-bottom: 16px; }
+  .faq-item { background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; padding: 20px; margin-bottom: 12px; }
+  .faq-item h4 { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; color: var(--text); }
+  .faq-item p { font-size: 0.95rem; color: var(--muted); line-height: 1.6; margin: 0; }
+  .pub-content.ar h2, .pub-content.ar h3, .pub-content.ar h4, .pub-content.ar p { font-family: 'Cairo', 'Inter', Tahoma, Arial, sans-serif; }
+
   /* CONTACT SECTION */
   .contact { margin-top: 64px; padding-top: 48px; border-top: 1px solid var(--border); text-align: center; }
   .contact-label { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
@@ -579,8 +590,22 @@ const DICT = {
     download: "Download PDF", copy: "Copy Text", copied: "Copied!", guideTitle: "Precision in three steps",
     g1num: "01", g1title: "Upload CV", g1desc: "Securely upload your current resume. We support all major formats including PDF, DOCX, and TXT.",
     g2num: "02", g2title: "AI Analysis", g2desc: "Our proprietary AI identifies gaps, keywords, and formatting issues that hold you back from top roles.",
-    g3num: "03", g3title: "Download PDF", g3desc: "Receive a clean, ATS-compliant PDF ready for submission. Optimized for both humans and bots.",
-    footerText: "© 2024 FlipYourCV. AI-Powered Excellence.", contact: "Contact", twitter: "Twitter 𝕏", github: "GitHub"
+    footerText: "© 2024 FlipYourCV. AI-Powered Excellence.", contact: "Contact", twitter: "Twitter 𝕏", github: "GitHub",
+    guideAtsTitle: "The Ultimate Guide to ATS CV Optimization",
+    guideAtsP1: "An Applicant Tracking System (ATS) is a software application that enables the electronic handling of recruitment needs. Over 98% of Fortune 500 companies use ATS software to filter resumes. If your CV is not formatted correctly, or lacks the exact keywords from the job description, the ATS will automatically reject it before a human ever sees it.",
+    guideAtsH1: "Why Traditional Resumes Fail",
+    guideAtsP2: "Many job seekers use complex templates, multiple columns, images, and unique fonts to stand out. While visually appealing to a human, these elements confuse ATS parsing algorithms. Our AI Optimizer strips away unreadable formatting and rebuilds your resume in a clean, linear textual format that scores 100% on ATS parsers.",
+    guideAtsH2: "How Our AI Keyword Optimization Works",
+    guideAtsP3: "By analyzing the target job title you provide, our AI contextualizes your experience and ensures that industry-standard terminology is appropriately highlighted. This guarantees that when the recruiter searches their database for specific skills, your profile ranks at the top.",
+    faqTitle: "Frequently Asked Questions",
+    faq1Q: "Is this resume optimizer really free?",
+    faq1A: "Yes, our core ATS formatting and optimization tool is completely free to use. We believe everyone deserves a fair chance at landing their dream job without format-related rejections.",
+    faq2Q: "Do I need to create an account to use the service?",
+    faq2A: "No account is required. We prioritize your privacy and convenience. Simply upload your CV, optimize it, and download the resulting PDF immediately.",
+    faq3Q: "Are my personal details saved on your servers?",
+    faq3A: "Absolutely not. We process your resume entirely in memory for the duration of the conversion. Once your optimized PDF is generated, all data is discarded. We do not store, share, or sell your personal data.",
+    faq4Q: "Which formats are supported for upload?",
+    faq4A: "You can upload your current resume in PDF, DOCX, or direct TXT format. Our system will extract the raw text and restructure it intelligently."
   },
   ar: {
     navSubtitle: "الأداة الأولى لتحسين السيرة الذاتية", heroBadge: "مدعوم بالذكاء الاصطناعي",
@@ -600,7 +625,22 @@ const DICT = {
     g1num: "01", g1title: "رفع السيرة الذاتية", g1desc: "قم برفع سيرتك الذاتية بأمان. نحن ندعم جميع الصيغ الرئيسية بما في ذلك PDF، و DOCX، والنص المباشر.",
     g2num: "02", g2title: "تحليل الذكاء الاصطناعي", g2desc: "يقوم الذكاء الاصطناعي الخاص بنا بتحديد الفجوات وإصلاح الكلمات المفتاحية ومشاكل التنسيق التي تعيق وصولك.",
     g3num: "03", g3title: "تحميل ملف PDF", g3desc: "احصل على ملف PDF بتصميم نظيف ومتوافق تماماً مع أنظمة الفرز (ATS)، جاهز للتقديم الفوري.",
-    footerText: "© 2024 FlipYourCV. AI-Powered Excellence.", contact: "تواصل معنا", twitter: "تويتر 𝕏", github: "جيت هب"
+    footerText: "© 2024 FlipYourCV. AI-Powered Excellence.", contact: "تواصل معنا", twitter: "تويتر 𝕏", github: "جيت هب",
+    guideAtsTitle: "الدليل الشامل لتحسين السيرة الذاتية لأنظمة ATS",
+    guideAtsP1: "نظام تتبع المتقدمين (ATS) هو برنامج يُمكّن من التعامل الإلكتروني مع احتياجات التوظيف. أكثر من 98٪ من شركات فورتشن 500 تستخدم هذا النظام لفرز السير الذاتية. إذا لم تكن سيرتك مصاغة بشكل صحيح، أو تفتقر إلى الكلمات المفتاحية الدقيقة، سيرفضها النظام تلقائيًا قبل أن يراها أي شخص.",
+    guideAtsH1: "لماذا تفشل السير الذاتية التقليدية",
+    guideAtsP2: "يستخدم العديد من الباحثين عن عمل قوالب معقدة، وأعمدة متعددة، وصور، وخطوط فريدة للتميز. رغم أن هذه العناصر جذابة للعين البشرية، إلا أنها تربك خوارزميات أنظمة التوظيف. تقوم الأداة الخاصة بنا بإزالة التنسيقات غير المقروءة وتعيد بناء السيرة الذاتية بنسق نصي نقي ونظيف يحقق نسبة 100٪ في الاختبارات.",
+    guideAtsH2: "كيف يعمل تحسين الذكاء الاصطناعي",
+    guideAtsP3: "عبر تحليل المسمى الوظيفي المستهدف، يفهم الذكاء الاصطناعي الخاص بنا خبراتك ويضمن تسليط الضوء على المصطلحات القياسية في مجالك. هذا يضمن أنه عندما يبحث مسؤول التوظيف عن مهارات معينة، يظهر ملفك في الصدارة.",
+    faqTitle: "الأسئلة الشائعة",
+    faq1Q: "هل هذه الأداة مجانية حقاً؟",
+    faq1A: "نعم، أداة التحسين الأساسية الخاصة بنا مجانية بالكامل. نحن نؤمن بأن الجميع يستحق فرصة عادلة للحصول على وظيفة أحلامه بعيداً عن أخطاء التنسيق.",
+    faq2Q: "هل أحتاج لإنشاء حساب لاستخدام الخدمة؟",
+    faq2A: "لا حاجة لإنشاء أي حساب. نحن نضع خصوصيتك في المقام الأول. قم برفع سيرتك، حسنها، وحمل الـ PDF فوراً.",
+    faq3Q: "هل يتم حفظ بياناتي الشخصية على خوادمكم؟",
+    faq3A: "مطلقاً. يتم معالجة السيرة الذاتية بشكل مؤقت أثناء التحويل فقط. بمجرد انتهاء العملية، يتم التخلص من جميع البيانات. لا نقوم بتخزين أو مشاركة بياناتك.",
+    faq4Q: "ما هي الصيغ المدعومة للرفع؟",
+    faq4A: "يمكنك رفع سيرتك الذاتية الحالية بصيغ PDF أو DOCX أو TXT. سيقوم نظامنا باستخراج النص الخام وإعادة هيكلته بذكاء وصياغته بشكل صحيح."
   }
 };
 
@@ -942,6 +982,39 @@ export default function App() {
                   <p style={{ opacity: 0.5 }}>{lang === 'ar' ? 'سيتم إنشاء ملف PDF متوافق ونظيف' : 'A clean, ATS-compliant PDF will be generated'}</p>
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+
+        {/* ── PUBLISHER CONTENT AREA (FOR SEO & ADSENSE) ── */}
+        <div className={`pub-content ${lang === 'ar' ? 'ar' : ''}`} style={{ direction: lang === 'ar' ? 'rtl' : 'ltr' }}>
+          <div className="pub-section">
+            <h2>{t("guideAtsTitle")}</h2>
+            <p>{t("guideAtsP1")}</p>
+            <h3>{t("guideAtsH1")}</h3>
+            <p>{t("guideAtsP2")}</p>
+            <h3>{t("guideAtsH2")}</h3>
+            <p>{t("guideAtsP3")}</p>
+          </div>
+
+          <div className="pub-section">
+            <h2>{t("faqTitle")}</h2>
+            
+            <div className="faq-item">
+              <h4>{t("faq1Q")}</h4>
+              <p>{t("faq1A")}</p>
+            </div>
+            <div className="faq-item">
+              <h4>{t("faq2Q")}</h4>
+              <p>{t("faq2A")}</p>
+            </div>
+            <div className="faq-item">
+              <h4>{t("faq3Q")}</h4>
+              <p>{t("faq3A")}</p>
+            </div>
+            <div className="faq-item">
+              <h4>{t("faq4Q")}</h4>
+              <p>{t("faq4A")}</p>
             </div>
           </div>
         </div>
