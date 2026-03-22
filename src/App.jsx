@@ -590,7 +590,7 @@ const DICT = {
     download: "Download PDF", copy: "Copy Text", copied: "Copied!", guideTitle: "Precision in three steps",
     g1num: "01", g1title: "Upload CV", g1desc: "Securely upload your current resume. We support all major formats including PDF, DOCX, and TXT.",
     g2num: "02", g2title: "AI Analysis", g2desc: "Our proprietary AI identifies gaps, keywords, and formatting issues that hold you back from top roles.",
-    footerText: "© 2024 FlipYourCV. AI-Powered Excellence.", contact: "Contact", twitter: "Twitter 𝕏", github: "GitHub",
+    footerText: "© 2026 FlipYourCV. AI-Powered Excellence.", contact: "Contact",
     guideAtsTitle: "The Ultimate Guide to ATS CV Optimization",
     guideAtsP1: "An Applicant Tracking System (ATS) is a software application that enables the electronic handling of recruitment needs. Over 98% of Fortune 500 companies use ATS software to filter resumes. If your CV is not formatted correctly, or lacks the exact keywords from the job description, the ATS will automatically reject it before a human ever sees it.",
     guideAtsH1: "Why Traditional Resumes Fail",
@@ -625,7 +625,7 @@ const DICT = {
     g1num: "01", g1title: "رفع السيرة الذاتية", g1desc: "قم برفع سيرتك الذاتية بأمان. نحن ندعم جميع الصيغ الرئيسية بما في ذلك PDF، و DOCX، والنص المباشر.",
     g2num: "02", g2title: "تحليل الذكاء الاصطناعي", g2desc: "يقوم الذكاء الاصطناعي الخاص بنا بتحديد الفجوات وإصلاح الكلمات المفتاحية ومشاكل التنسيق التي تعيق وصولك.",
     g3num: "03", g3title: "تحميل ملف PDF", g3desc: "احصل على ملف PDF بتصميم نظيف ومتوافق تماماً مع أنظمة الفرز (ATS)، جاهز للتقديم الفوري.",
-    footerText: "© 2024 FlipYourCV. AI-Powered Excellence.", contact: "تواصل معنا", twitter: "تويتر 𝕏", github: "جيت هب",
+    footerText: "© 2026 FlipYourCV. AI-Powered Excellence.", contact: "تواصل معنا",
     guideAtsTitle: "الدليل الشامل لتحسين السيرة الذاتية لأنظمة ATS",
     guideAtsP1: "نظام تتبع المتقدمين (ATS) هو برنامج يُمكّن من التعامل الإلكتروني مع احتياجات التوظيف. أكثر من 98٪ من شركات فورتشن 500 تستخدم هذا النظام لفرز السير الذاتية. إذا لم تكن سيرتك مصاغة بشكل صحيح، أو تفتقر إلى الكلمات المفتاحية الدقيقة، سيرفضها النظام تلقائيًا قبل أن يراها أي شخص.",
     guideAtsH1: "لماذا تفشل السير الذاتية التقليدية",
@@ -999,7 +999,7 @@ export default function App() {
 
           <div className="pub-section">
             <h2>{t("faqTitle")}</h2>
-            
+
             <div className="faq-item">
               <h4>{t("faq1Q")}</h4>
               <p>{t("faq1A")}</p>
@@ -1035,8 +1035,8 @@ export default function App() {
           <h2>{lang === 'ar' ? 'دعنا' : 'Get in'} <span>{lang === 'ar' ? 'نتواصل' : 'touch'}</span></h2>
           <p>{lang === 'ar' ? 'هل لديك سؤال، اقتراح، أو تريد فقط إلقاء التحية؟ لا تتردد في التواصل معي — يسعدني سماع رأيك.' : 'Have a question, feedback, or just want to say hi? Feel free to reach out — I\'d love to hear from you.'}</p>
           <div className="contact-links" style={{ justifyContent: "center", flexDirection: lang === 'ar' ? "row-reverse" : "row" }}>
-            <a className="contact-link" href="mailto:your@email.com" style={{ direction: "ltr" }}>
-              <span className="icon">✉</span> your@email.com
+            <a className="contact-link" href="mailto:info@flipyourcv.tech" style={{ direction: "ltr" }}>
+              <span className="icon">✉</span> info@flipyourcv.tech
             </a>
           </div>
         </div>
