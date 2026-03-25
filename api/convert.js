@@ -290,10 +290,9 @@ Analyze the CV below and return ONLY a valid JSON object (no markdown, no explan
 Rules:
 - CRITICAL: Do NOT just copy the input text. You must SIGNIFICANTLY EXPAND, ENHANCE, and ELABORATE on all bullet points and descriptions to make them highly professional, impactful, and detailed.
 - If the original CV has short bullet points, rewrite them into comprehensive achievements using the STAR method (Situation, Task, Action, Result) where possible, ensuring high keyword density for ATS systems.
-- Expand the experience to fill out the resume fully. Add logical responsibilities and accomplishments based on the job title, aiming for 3-4 detailed bullet points per role.
 - Deduce and add highly relevant industry keywords and skills based on the experience provided, especially if a target job title is provided.
 - Ensure the 'summary' is at least 3 dense, compelling sentences highlighting the candidate's core value proposition and alignment with the target role.
-- Extract ALL experience entries with their dates/duration — never leave duration empty.
+- Extract ALL experience entries with their dates/duration.
 - Each bullet point must start with a strong action verb and include quantifiable metrics where plausible.
 - Skills should be individual items, not sentences. Generate at least 15-20 highly relevant skills that match the experience and target role.
 - Extract ALL languages mentioned with proficiency level.
