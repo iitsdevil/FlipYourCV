@@ -288,7 +288,7 @@ Analyze the CV below and return ONLY a valid JSON object (no markdown, no explan
 }
 
 Rules:
-- CRITICAL: Do NOT just copy the input text. You must SIGNIFICANTLY EXPAND, ENHANCE, and ELABORATE on all bullet points and descriptions to make them highly professional, impactful, and detailed.
+- CRITICAL: Do NOT just copy the input text. You must EXPAND, ENHANCE, and ELABORATE on all bullet points and descriptions to make them highly professional, impactful, and detailed.
 - If the original CV has short bullet points, rewrite them into comprehensive achievements using the STAR method (Situation, Task, Action, Result) where possible, ensuring high keyword density for ATS systems.
 - Deduce and add highly relevant industry keywords and skills based on the experience provided, especially if a target job title is provided.
 - Ensure the 'summary' is at least 3 dense, compelling sentences highlighting the candidate's core value proposition and alignment with the target role.
