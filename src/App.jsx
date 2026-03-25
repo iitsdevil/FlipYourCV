@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import * as mammoth from "mammoth";
 import jsPDF from "jspdf";
+import pdfWorkerUrl from "pdfjs-dist/build/pdf.worker.mjs?url";
+
 
 const STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&family=JetBrains+Mono:wght@400;500&family=Cairo:wght@400;500;600;700&display=swap');
@@ -727,16 +729,22 @@ export default function App() {
     }
     if (ext === "pdf") {
       const pdfjsLib = await import("pdfjs-dist");
-      pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
+      pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
       const buf = await f.arrayBuffer();
       const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
-      let text = "";
+      
+      const pagePromises = [];
       for (let i = 1; i <= pdf.numPages; i++) {
-        const page = await pdf.getPage(i);
-        const content = await page.getTextContent();
-        text += content.items.map((s) => s.str).join(" ") + "\n";
+        pagePromises.push(
+          pdf.getPage(i).then(page =>
+            page.getTextContent().then(content =>
+              content.items.map((s) => s.str).join(" ")
+            )
+          )
+        );
       }
-      return text;
+      const pageTexts = await Promise.all(pagePromises);
+      return pageTexts.join("\n");
     }
     throw new Error("Unsupported file type. Please upload PDF, DOCX, or TXT.");
   };
