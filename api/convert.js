@@ -294,9 +294,8 @@ Rules:
 - Ensure the 'summary' is at least 3 dense, compelling sentences highlighting the candidate's core value proposition and alignment with the target role.
 - Extract ALL experience entries with their dates/duration.
 - Each bullet point must start with a strong action verb and include quantifiable metrics where plausible.
-- Skills should be individual items, not sentences. Generate at least 15-20 highly relevant skills that match the experience and target role.
+- Skills should be individual items, not sentences. Generate at least 10-15 highly relevant skills that match the experience and target role.
 - Extract ALL languages mentioned with proficiency level.
-- Extract ALL hobbies or interests if mentioned.
 - Extract references if mentioned, or use empty array [].
 - If references say "available upon request" use: [{ "name": "Available upon request", "title": "", "company": "", "contact": "" }]
 - Score is ATS compatibility out of 100.
